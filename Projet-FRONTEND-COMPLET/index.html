@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vente de Maillots de Football</title>
+  <link rel="stylesheet" href="style4.css" />
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="logo">
+      <a href="index.html"><img src="MaillotsCAN/original.png" alt="Logo de l'entreprise" /></a>
+    </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="produits.html">Produits</a></li>
+        <li><a href="register.html">Inscription</a></li>
+      </ul>
+    </nav>
+    <div class="user-icons">
+  <div id="user-display"></div>
+  <a href="panier.html"><img src="MaillotsCAN/Logo-panier.png" alt="Panier" /></a>
+</div>
+    </div>
+  </div>
+</header>
+
+<br><br><br>
+
+<section class="hero">
+  <div class="overlay"></div>
+  <div class="hero-text">
+    <h6>ABY</h6>
+    <h1>Laisse parler ton style</h1>
+    <p>Découvrez notre nouvelle collection 2025</p>
+    <a href="produits.html" class="btn">Achetez Maintenant</a>
+  </div>
+</section>
+
+<h1>Nos Collections</h1>
+
+<section class="categories">
+  <div class="category"><img src="MaillotsCAN/homme.jpg" alt="Homme"><a href="#">Homme</a></div>
+  <div class="category"><img src="MaillotsCAN/femme.jpg" alt="Femme"><a href="#">Femme</a></div>
+  <div class="category"><img src="MaillotsCAN/enfant.jpg" alt="Enfant"><a href="#">Enfant</a></div>
+  <div class="category"><img src="MaillotsCAN/accessoires.jpg" alt="Accessoires"><a href="#">Accessoires</a></div>
+</section>
+
+<section class="featured-products">
+  <h2>Produits en vedette</h2>
+  <div class="product-grid">
+    <article class="product-item">
+      <img src="MaillotsCAN/tshirt-homme.jpg" alt="T-shirt Homme">
+      <h3>T-shirt Homme</h3>
+      <p>19.99€</p>
+      <button onclick="ajouterAuPanier({id: 1, nom: 'T-shirt Homme', prix: 19.99, image: 'MaillotsCAN/tshirt-homme.jpg'})">Ajouter au panier</button>
+    </article>
+    <article class="product-item">
+      <img src="MaillotsCAN/robe-femme.jpg" alt="Robe Femme">
+      <h3>Robe Longue</h3>
+      <p>49.99€</p>
+      <button onclick="ajouterAuPanier({id: 2, nom: 'Robe Longue', prix: 49.99, image: 'MaillotsCAN/robe-femme.jpg'})">Ajouter au panier</button>
+    </article>
+    <article class="product-item">
+      <img src="MaillotsCAN/tshirt-enfant.jpg" alt="T-shirt Enfant">
+      <h3>T-shirt Enfant</h3>
+      <p>14.99€</p>
+      <button onclick="ajouterAuPanier({id: 3, nom: 'T-shirt Enfant', prix: 14.99, image: 'MaillotsCAN/tshirt-enfant.jpg'})">Ajouter au panier</button>
+    </article>
+  </div>
+</section>
+
+<section class="recommended">
+  <h2>Recommandations</h2>
+  <div class="recommended-container">
+    <article class="recommended-item">
+      <img src="MaillotsCAN/sac-femme.jpg" alt="Sac à main">
+      <h3>Sac à main</h3>
+      <p>29.99€</p>
+      <button onclick="ajouterAuPanier({id: 4, nom: 'Sac à main', prix: 29.99, image: 'MaillotsCAN/sac-femme.jpg'})">Ajouter au panier</button>
+    </article>
+    <article class="recommended-item">
+      <img src="MaillotsCAN/casquette-homme.jpg" alt="Casquette">
+      <h3>Casquette Homme</h3>
+      <p>19.99€</p>
+      <button onclick="ajouterAuPanier({id: 5, nom: 'Casquette Homme', prix: 19.99, image: 'MaillotsCAN/casquette-homme.jpg'})">Ajouter au panier</button>
+    </article>
+  </div>
+</section>
+
+<section class="features index-features">
+  <div class="container">
+    <h2>Pourquoi acheter chez nous ?</h2>
+    <div class="feature">
+      <img src="MaillotsCAN/icon-quality.png" alt="Qualité">
+      <h3>Qualité Supérieure</h3>
+      <p>Nos maillots sont faits avec des matériaux de haute qualité.</p>
+    </div>
+    <div class="feature">
+      <img src="MaillotsCAN/icon-shipping.jpeg" alt="Livraison">
+      <h3>Livraison Rapide</h3>
+      <p>Recevez vos produits en un temps record.</p>
+    </div>
+    <div class="feature">
+      <img src="MaillotsCAN/icon-support.jpeg" alt="Support">
+      <h3>Support Client</h3>
+      <p>Notre équipe est disponible 24/7.</p>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials index-testimonials">
+  <div class="container">
+    <h2>Avis clients</h2>
+    <div class="testimonial">
+      <p>"Produits de très bonne qualité, livraison rapide !"</p>
+      <p>- Hervé Ndayishimiye</p>
+    </div>
+    <div class="testimonial">
+      <p>"Service client excellent, je recommande."</p>
+      <p>- Idrissa Gueye</p>
+    </div>
+    <div class="testimonial">
+      <p>"Une super expérience d'achat."</p>
+      <p>- Ahmed Ben Ali</p>
+    </div>
+  </div>
+</section>
+
+<section class="blog-news index-blog-news">
+  <div class="container">
+    <h2>Dernières actualités</h2>
+    <div class="blog-post">
+      <h3>L'été 2025 arrive !</h3>
+      <p>Découvrez les nouveaux vêtements de plage</p>
+      <a href="#" class="btn">Lire la suite</a>
+    </div>
+    <div class="blog-post">
+      <h3>Tendances</h3>
+      <p>Quels sont les designs les plus populaires cette année ?</p>
+      <a href="#" class="btn">Lire la suite</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2025 ABY</p>
+    <ul>
+      <li><a href="#">CGV</a></li>
+      <li><a href="#">Politique de confidentialité</a></li>
+      <li><a href="#">Mentions légales</a></li>
+    </ul>
+    <div class="social-icons">
+      <a href="#"><img src="MaillotsCAN/icon-facebook.jpeg" alt="Facebook"></a>
+      <a href="#"><img src="MaillotsCAN/Icon-X.avif" alt="Twitter"></a>
+      <a href="#"><img src="MaillotsCAN/icon-Instagram.avif" alt="Instagram"></a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>

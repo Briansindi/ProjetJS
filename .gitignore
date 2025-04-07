@@ -1,0 +1,5 @@
+# Empêche Git de suivre ces dossiers/fichiers
+node_modules/
+.env
+*.log
+.DS_Store

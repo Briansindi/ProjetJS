@@ -1,0 +1,106 @@
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maillot </title>
+    <link rel="stylesheet" href="style4.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="index.html"><img src="MaillotsCAN/original.png" alt="Logo de l'entreprise"></a>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="produits.html">Produits</a></li>
+                    <li><a href="register.html">Inscription</a></li>
+                </ul>
+            </nav>
+            <div class="user-icons">
+                
+                    <a href="login.html" id="loginBtn"><img src="MaillotsCAN/Logo-user.jpeg" alt="Compte"></a>
+                
+                <a href="panier.html"><img src="MaillotsCAN/Logo-panier.png" alt="Panier"></a>
+            </div>
+        </div>
+    </header>
+    <main>
+    
+    <h1 class="nompys"></h1>
+    <div class="maillott-container">
+        <div class="maillott-carousel">
+            <div class="carousel-images">
+                <img src="" alt="Maillot Domicile de ">
+                <img src="" alt="Maillot Extérieur de ">
+            </div>
+        </div>
+        <div class="maillott-details">
+            <h2>Options :</h2>
+            <div class="maillott-buttons">
+                <button onclick="showSlide(0)">Domicile</button>
+                <button onclick="showSlide(1)">Extérieur</button>
+            </div>
+            <p class="prix">Prix:  €</p>
+            <form method="post" action="">
+                <input type="hidden" name="id" value="">
+                <label for="taille">Choisir la taille :</label>
+                <select name="taille" id="taille" required>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                </select>
+                <button type="submit" class="btn-add-to-cart">Ajouter au Panier</button>
+            </form>
+        </div>
+    </div>
+    
+        <p>Maillot non trouvé.</p>
+    
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Maillots de Foot</p>
+            <ul>
+                <li><a href="#">CGV</a></li>
+                <li><a href="#">Politique de confidentialité</a></li>
+                <li><a href="#">Mentions légales</a></li>
+            </ul>
+            <div class="social-icons">
+                <a href="#"><img src="MaillotsCAN/icon-facebook.jpeg" alt="Facebook"></a>
+                <a href="#"><img src="MaillotsCAN/Icon-X.avif" alt="Twitter"></a>
+                <a href="#"><img src="MaillotsCAN/icon-Instagram.avif" alt="Instagram"></a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            const slides = document.querySelector('.carousel-images');
+            const totalSlides = slides.children.length;
+            if (index >= totalSlides) {
+                currentSlide = 0;
+            } else if (index < 0) {
+                currentSlide = totalSlides - 1;
+            } else {
+                currentSlide = index;
+            }
+            slides.style.transform = `translateX(-${currentSlide * 300}px)`;
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+    </script>
+</body>
+</html>

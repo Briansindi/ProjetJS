@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Boutique - Produits</title>
+  <link rel="stylesheet" href="style4.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">
+        <a href="index.html"><img src="MaillotsCAN/original.png" alt="Logo de l'entreprise"></a>
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="produits.html">Produits</a></li>
+          <li><a href="register.html">Inscription</a></li>
+        </ul>
+      </nav>
+      <div class="user-icons" id="user-display">
+        <a href="login.html"><img src="MaillotsCAN/Logo-user.jpeg" alt="Compte" /></a>
+        <a href="panier.html"><img src="MaillotsCAN/Logo-panier.png" alt="Panier" /></a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h1>Nos Produits</h1>
+    <div id="filters" style="text-align:center; margin-bottom: 20px;">
+      <button onclick="filtrerProduits('Tous')">Tous</button>
+      <button onclick="filtrerProduits('Homme')">Homme</button>
+      <button onclick="filtrerProduits('Femme')">Femme</button>
+      <button onclick="filtrerProduits('Enfant')">Enfant</button>
+      <button onclick="filtrerProduits('Accessoires')">Accessoires</button>
+    </div>
+
+    <section class="product-grid" id="product-grid"></section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 ABY</p>
+      <ul>
+        <li><a href="#">CGV</a></li>
+        <li><a href="#">Politique de confidentialité</a></li>
+        <li><a href="#">Mentions légales</a></li>
+      </ul>
+      <div class="social-icons">
+        <a href="#"><img src="MaillotsCAN/icon-facebook.jpeg" alt="Facebook"></a>
+        <a href="#"><img src="MaillotsCAN/Icon-X.avif" alt="Twitter"></a>
+        <a href="#"><img src="MaillotsCAN/icon-Instagram.avif" alt="Instagram"></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    let allProducts = [];
+
+    async function chargerProduits() {
+      const res = await fetch("http://localhost:5002/api/products");
+      const produits = await res.json();
+      allProducts = produits;
+      afficherProduits(produits);
+    }
+
+    function afficherProduits(liste) {
+      const grid = document.getElementById("product-grid");
+      grid.innerHTML = "";
+      liste.forEach(produit => {
+        const div = document.createElement("div");
+        div.className = "product-item";
+        div.innerHTML = `
+          <img src="MaillotsCAN/${produit.image}" alt="${produit.nom}">
+          <h3>${produit.nom}</h3>
+          <p>${produit.description}</p>
+          <p><strong>${produit.prix.toFixed(2)}€</strong></p>
+          <button onclick='ajouterAuPanier(${JSON.stringify(produit)})'>Ajouter au panier</button>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    function filtrerProduits(categorie) {
+      if (categorie === "Tous") {
+        afficherProduits(allProducts);
+      } else {
+        const filtres = allProducts.filter(p => p.categorie === categorie);
+        afficherProduits(filtres);
+      }
+    }
+
+    function ajouterAuPanier(produit) {
+      const panier = JSON.parse(localStorage.getItem("panier") || "[]");
+      panier.push({ ...produit, quantite: 1 });
+      localStorage.setItem("panier", JSON.stringify(panier));
+      alert(`${produit.nom} ajouté au panier`);
+    }
+
+    // Affichage nom utilisateur
+    document.addEventListener("DOMContentLoaded", () => {
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  const display = document.getElementById("user-display");
+
+  if (user) {
+    display.innerHTML = `
+      <span>👋 ${user.prenom} ${user.nom}</span>
+      <button onclick="logout()" style="margin-left: 10px;">Déconnexion</button>
+      <a href="panier.html" style="margin-left: 15px;">
+        <img src="MaillotsCAN/Logo-panier.png" alt="Panier" />
+      </a>
+    `;
+  }
+
+  // Charger les produits après avoir géré l'affichage utilisateur
+  if (typeof chargerProduits === "function") {
+    chargerProduits();
+  }
+});
+
+function logout() {
+  localStorage.removeItem("currentUser");
+  window.location.reload();
+}
+
+  </script>
+</body>
+</html>
