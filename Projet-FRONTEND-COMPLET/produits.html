@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Boutique - Produits</title>
+  <title>ABY - Collection de Vêtements</title>
   <link rel="stylesheet" href="style4.css" />
+  <link rel="stylesheet" href="produits-style.css" />
 </head>
 <body>
   <header>
     <div class="container">
       <div class="logo">
-        <a href="index.html"><img src="MaillotsCAN/original.png" alt="Logo de l'entreprise"></a>
+        <a href="index.html"><img src="MaillotsCAN/original.png" alt="Logo ABY"></a>
       </div>
       <nav>
         <ul class="nav-links">
@@ -19,24 +20,108 @@
           <li><a href="register.html">Inscription</a></li>
         </ul>
       </nav>
-      <div class="user-icons" id="user-display">
-        <a href="login.html"><img src="MaillotsCAN/Logo-user.jpeg" alt="Compte" /></a>
-        <a href="panier.html"><img src="MaillotsCAN/Logo-panier.png" alt="Panier" /></a>
+      <div class="user-icons">
+        <div id="user-display"></div>
+        <a href="panier.html"><img src="MaillotsCAN/Logo-panier.png" alt="Panier" /><span class="cart-count" id="cart-count">0</span></a>
       </div>
     </div>
   </header>
 
-  <main>
-    <h1>Nos Produits</h1>
-    <div id="filters" style="text-align:center; margin-bottom: 20px;">
-      <button onclick="filtrerProduits('Tous')">Tous</button>
-      <button onclick="filtrerProduits('Homme')">Homme</button>
-      <button onclick="filtrerProduits('Femme')">Femme</button>
-      <button onclick="filtrerProduits('Enfant')">Enfant</button>
-      <button onclick="filtrerProduits('Accessoires')">Accessoires</button>
+  <main class="products-main">
+    <div class="banner-section">
+      <div class="overlay"></div>
+      <h1>Collection Printemps-Été 2025</h1>
+      <p>Découvrez nos nouvelles tendances et exprimez votre style unique</p>
     </div>
 
-    <section class="product-grid" id="product-grid"></section>
+    <div class="shop-container">
+      <div class="sidebar">
+        <div class="filter-section">
+          <h3>Catégories</h3>
+          <ul class="category-filters">
+            <li><button class="filter-btn active" data-category="Tous">Tous les produits</button></li>
+            <li><button class="filter-btn" data-category="Homme">Homme</button></li>
+            <li><button class="filter-btn" data-category="Femme">Femme</button></li>
+            <li><button class="filter-btn" data-category="Enfant">Enfant</button></li>
+            <li><button class="filter-btn" data-category="Accessoires">Accessoires</button></li>
+          </ul>
+        </div>
+
+        <div class="filter-section">
+          <h3>Prix</h3>
+          <div class="price-range">
+            <input type="range" id="price-filter" min="0" max="100" value="100" class="price-slider">
+            <div class="price-labels">
+              <span>0€</span>
+              <span id="current-price">100€</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h3>Couleurs</h3>
+          <div class="color-filters">
+            <button class="color-btn" style="background-color: #000;"></button>
+            <button class="color-btn" style="background-color: #fff; border: 1px solid #ddd;"></button>
+            <button class="color-btn" style="background-color: #2a52be;"></button>
+            <button class="color-btn" style="background-color: #dc143c;"></button>
+            <button class="color-btn" style="background-color: #228b22;"></button>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h3>Taille</h3>
+          <div class="size-filters">
+            <button class="size-btn">XS</button>
+            <button class="size-btn">S</button>
+            <button class="size-btn">M</button>
+            <button class="size-btn">L</button>
+            <button class="size-btn">XL</button>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <button id="reset-filters" class="reset-btn">Réinitialiser les filtres</button>
+        </div>
+      </div>
+
+      <div class="products-container">
+        <div class="products-header">
+          <div class="products-count"><span id="count-products">16</span> produits</div>
+          <div class="sort-container">
+            <label for="sort-select">Trier par:</label>
+            <select id="sort-select">
+              <option value="default">Pertinence</option>
+              <option value="price-asc">Prix croissant</option>
+              <option value="price-desc">Prix décroissant</option>
+              <option value="name-asc">Nom A-Z</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="product-grid" id="product-grid">
+          <!-- Les produits seront chargés ici dynamiquement -->
+        </div>
+
+        <div class="pagination">
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn next">→</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="newsletter">
+      <div class="newsletter-content">
+        <h2>Inscrivez-vous à notre newsletter</h2>
+        <p>Recevez en avant-première nos nouvelles collections et offres exclusives</p>
+        <form id="newsletter-form">
+          <input type="email" placeholder="Votre adresse email" required>
+          <button type="submit">S'inscrire</button>
+        </form>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -55,75 +140,413 @@
     </div>
   </footer>
 
+  <div id="quick-view-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="product-preview">
+        <div class="product-preview-img">
+          <!-- Image du produit injectée ici -->
+        </div>
+        <div class="product-preview-info">
+          <!-- Info du produit injectée ici -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     let allProducts = [];
+    let filteredProducts = [];
+    const priceSlider = document.getElementById('price-filter');
+    const currentPrice = document.getElementById('current-price');
+    const modal = document.getElementById('quick-view-modal');
+    
+    // Mettre à jour le label du prix
+    priceSlider.addEventListener('input', function() {
+      currentPrice.textContent = this.value + '€';
+      filterProducts();
+    });
+    
+    // Fermer la modal
+    document.querySelector('.close-modal').addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+    
+    window.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
 
+    // Récupérer les données des produits
     async function chargerProduits() {
-      const res = await fetch("http://localhost:5002/api/products");
-      const produits = await res.json();
-      allProducts = produits;
-      afficherProduits(produits);
-    }
-
-    function afficherProduits(liste) {
-      const grid = document.getElementById("product-grid");
-      grid.innerHTML = "";
-      liste.forEach(produit => {
-        const div = document.createElement("div");
-        div.className = "product-item";
-        div.innerHTML = `
-          <img src="MaillotsCAN/${produit.image}" alt="${produit.nom}">
-          <h3>${produit.nom}</h3>
-          <p>${produit.description}</p>
-          <p><strong>${produit.prix.toFixed(2)}€</strong></p>
-          <button onclick='ajouterAuPanier(${JSON.stringify(produit)})'>Ajouter au panier</button>
-        `;
-        grid.appendChild(div);
-      });
-    }
-
-    function filtrerProduits(categorie) {
-      if (categorie === "Tous") {
+      try {
+        const res = await fetch("http://localhost:5002/api/products");
+        const produits = await res.json();
+        allProducts = produits;
+        filteredProducts = [...produits];
+        updateProductCount();
+        afficherProduits(produits);
+        initCartCount();
+      } catch (error) {
+        console.error("Erreur lors du chargement des produits:", error);
+        // Utiliser les données de seed.js comme fallback
+        allProducts = [
+          { nom: "T-shirt Homme Coton", description: "T-shirt 100% coton, coupe classique", prix: 19.99, categorie: "Homme", image: "tshirt-homme.jpg" },
+          { nom: "Jean Slim Homme", description: "Jean slim en denim bleu foncé", prix: 39.99, categorie: "Homme", image: "jean-homme.jpg" },
+          { nom: "Chemise à Carreaux", description: "Chemise à carreaux en flanelle, idéale pour l'hiver", prix: 24.99, categorie: "Homme", image: "chemise-homme.jpg" },
+          { nom: "Veste en Jean", description: "Veste en jean bleu classique", prix: 59.99, categorie: "Homme", image: "veste-homme.jpg" },
+          { nom: "Blouse Femme Chic", description: "Blouse fluide et élégante pour toutes les occasions", prix: 29.99, categorie: "Femme", image: "blouse-femme.jpg" },
+          { nom: "Pantalon Large Femme", description: "Pantalon coupe large en lin, très confortable", prix: 34.99, categorie: "Femme", image: "pantalon-femme.jpg" },
+          { nom: "Robe d'Été Fleurie", description: "Robe légère à fleurs, parfaite pour les journées ensoleillées", prix: 44.99, categorie: "Femme", image: "robe-femme.jpg" },
+          { nom: "Cardigan Tricoté", description: "Cardigan doux et chaud pour l'automne", prix: 39.99, categorie: "Femme", image: "cardigan-femme.jpg" },
+          { nom: "T-shirt Enfant Motif", description: "T-shirt coloré avec motifs amusants", prix: 14.99, categorie: "Enfant", image: "tshirt-enfant.jpg" },
+          { nom: "Short Enfant Été", description: "Short léger pour l'été, 100% coton", prix: 12.99, categorie: "Enfant", image: "short-enfant.jpg" },
+          { nom: "Pyjama Enfant", description: "Pyjama deux pièces confortable pour les nuits fraîches", prix: 17.99, categorie: "Enfant", image: "pyjama-enfant.jpg" },
+          { nom: "Sweat Enfant", description: "Sweat à capuche enfant avec motif animal", prix: 22.99, categorie: "Enfant", image: "sweat-enfant.jpg" },
+          { nom: "Sac à Main Cuir", description: "Sac à main en simili cuir avec bandoulière", prix: 49.99, categorie: "Accessoires", image: "sac-main.jpg" },
+          { nom: "Casquette Classique", description: "Casquette unisexe en coton", prix: 15.99, categorie: "Accessoires", image: "casquette.jpg" },
+          { nom: "Lunettes de Soleil", description: "Lunettes UV tendance unisexe", prix: 18.99, categorie: "Accessoires", image: "lunettes.jpg" },
+          { nom: "Montre Sport", description: "Montre étanche pour le quotidien", prix: 29.99, categorie: "Accessoires", image: "montre.jpg" }
+        ];
+        filteredProducts = [...allProducts];
+        updateProductCount();
         afficherProduits(allProducts);
-      } else {
-        const filtres = allProducts.filter(p => p.categorie === categorie);
-        afficherProduits(filtres);
+        initCartCount();
       }
     }
 
+    // Initialiser le compteur du panier
+    function initCartCount() {
+      const panier = JSON.parse(localStorage.getItem("panier") || "[]");
+      document.getElementById('cart-count').textContent = panier.length;
+    }
+
+    // Mettre à jour le compteur de produits
+    function updateProductCount() {
+      document.getElementById('count-products').textContent = filteredProducts.length;
+    }
+
+    // Afficher les produits dans la grille
+    function afficherProduits(liste) {
+      const grid = document.getElementById("product-grid");
+      grid.innerHTML = "";
+      
+      if (liste.length === 0) {
+        grid.innerHTML = "<div class='no-products'>Aucun produit ne correspond à vos critères de recherche</div>";
+        return;
+      }
+      
+      liste.forEach(produit => {
+        const div = document.createElement("div");
+        div.className = "product-item";
+        
+        // Générer une note aléatoire
+        const rating = (Math.random() * 2 + 3).toFixed(1); // Entre 3.0 et 5.0
+        const ratingStars = generateRatingStars(rating);
+        
+        // Générer un badge pour certains produits
+        const badges = ['', '', 'NOUVEAU', 'PROMO', ''];
+        const randomBadge = badges[Math.floor(Math.random() * badges.length)];
+        const badgeHtml = randomBadge ? `<span class="product-badge">${randomBadge}</span>` : '';
+        
+        // Générer des couleurs disponibles
+        const colors = ['#000', '#2a52be', '#dc143c', '#228b22', '#fff'];
+        const randomColors = shuffleArray([...colors]).slice(0, Math.floor(Math.random() * 3) + 2);
+        const colorsHtml = randomColors.map(color => 
+          `<span class="color-dot" style="background-color: ${color}; ${color === '#fff' ? 'border: 1px solid #ddd;' : ''}"></span>`
+        ).join('');
+
+        div.innerHTML = `
+          ${badgeHtml}
+          <div class="product-image">
+            <img src="MaillotsCAN/${produit.image}" alt="${produit.nom}">
+            <div class="product-actions">
+              <button class="quick-view-btn" data-id="${produit._id || Math.random()}" aria-label="Aperçu rapide">
+                <i class="search-icon"></i>
+              </button>
+              <button class="wishlist-btn" aria-label="Ajouter aux favoris">
+                <i class="heart-icon"></i>
+              </button>
+            </div>
+          </div>
+          <div class="product-details">
+            <div class="product-category">${produit.categorie}</div>
+            <h3 class="product-name">${produit.nom}</h3>
+            <div class="product-rating">
+              ${ratingStars}
+              <span class="rating-count">(${Math.floor(Math.random() * 100) + 5})</span>
+            </div>
+            <div class="product-colors">
+              ${colorsHtml}
+            </div>
+            <div class="product-price-actions">
+              <p class="product-price">${produit.prix.toFixed(2)}€</p>
+              <button class="add-to-cart-btn" onclick='ajouterAuPanier(${JSON.stringify(produit).replace(/'/g, "\\'")})'>
+                Ajouter au panier
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(div);
+      });
+
+      // Ajouter les écouteurs d'événements pour "Aperçu rapide"
+      document.querySelectorAll('.quick-view-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const productId = this.getAttribute('data-id');
+          const product = liste.find(p => (p._id || Math.random()) == productId);
+          if (product) {
+            openQuickView(product);
+          }
+        });
+      });
+    }
+
+    // Générer les étoiles pour la note
+    function generateRatingStars(rating) {
+      const fullStars = Math.floor(rating);
+      const hasHalfStar = rating % 1 >= 0.5;
+      let starsHtml = '';
+      
+      for (let i = 0; i < 5; i++) {
+        if (i < fullStars) {
+          starsHtml += '<span class="star full"></span>';
+        } else if (i === fullStars && hasHalfStar) {
+          starsHtml += '<span class="star half"></span>';
+        } else {
+          starsHtml += '<span class="star empty"></span>';
+        }
+      }
+      
+      return starsHtml;
+    }
+
+    // Mélanger un tableau (pour les couleurs aléatoires)
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Ouvrir l'aperçu rapide d'un produit
+    function openQuickView(product) {
+      const imgContainer = document.querySelector('.product-preview-img');
+      const infoContainer = document.querySelector('.product-preview-info');
+      
+      imgContainer.innerHTML = `
+        <img src="MaillotsCAN/${product.image}" alt="${product.nom}">
+      `;
+      
+      infoContainer.innerHTML = `
+        <div class="product-category">${product.categorie}</div>
+        <h2>${product.nom}</h2>
+        <div class="product-rating">
+          ${generateRatingStars((Math.random() * 2 + 3).toFixed(1))}
+          <span class="rating-count">(${Math.floor(Math.random() * 100) + 5})</span>
+        </div>
+        <p class="product-price">${product.prix.toFixed(2)}€</p>
+        <p class="product-description">${product.description}</p>
+        <div class="product-options">
+          <div class="option-group">
+            <h4>Taille</h4>
+            <div class="size-options">
+              <button class="size-option">XS</button>
+              <button class="size-option">S</button>
+              <button class="size-option">M</button>
+              <button class="size-option">L</button>
+              <button class="size-option">XL</button>
+            </div>
+          </div>
+          <div class="option-group">
+            <h4>Couleur</h4>
+            <div class="color-options">
+              <button class="color-option" style="background-color: #000;"></button>
+              <button class="color-option" style="background-color: #2a52be;"></button>
+              <button class="color-option" style="background-color: #dc143c;"></button>
+              <button class="color-option" style="background-color: #fff; border: 1px solid #ddd;"></button>
+            </div>
+          </div>
+          <div class="option-group">
+            <h4>Quantité</h4>
+            <div class="quantity-selector">
+              <button class="quantity-btn minus">-</button>
+              <input type="number" value="1" min="1" max="10">
+              <button class="quantity-btn plus">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-actions">
+          <button class="add-to-cart-btn" onclick='ajouterAuPanier(${JSON.stringify(product).replace(/'/g, "\\'")})'>Ajouter au panier</button>
+          <button class="wishlist-btn">Ajouter aux favoris</button>
+        </div>
+        <div class="product-meta">
+          <p><strong>Référence:</strong> SKU-${Math.floor(Math.random() * 10000)}</p>
+          <p><strong>Disponibilité:</strong> <span class="in-stock">En stock</span></p>
+          <p><strong>Délai de livraison:</strong> 1-3 jours ouvrables</p>
+        </div>
+      `;
+      
+      // Ajouter des écouteurs pour les boutons de quantité
+      const quantityInput = infoContainer.querySelector('input[type="number"]');
+      infoContainer.querySelector('.minus').addEventListener('click', () => {
+        if (quantityInput.value > 1) quantityInput.value--;
+      });
+      infoContainer.querySelector('.plus').addEventListener('click', () => {
+        if (quantityInput.value < 10) quantityInput.value++;
+      });
+      
+      // Ajouter des écouteurs pour les options
+      infoContainer.querySelectorAll('.size-option').forEach(btn => {
+        btn.addEventListener('click', function() {
+          infoContainer.querySelectorAll('.size-option').forEach(b => b.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+      });
+      
+      infoContainer.querySelectorAll('.color-option').forEach(btn => {
+        btn.addEventListener('click', function() {
+          infoContainer.querySelectorAll('.color-option').forEach(b => b.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+      });
+      
+      modal.style.display = 'block';
+    }
+
+    // Filtrer les produits selon les critères sélectionnés
+    function filterProducts() {
+      const selectedCategory = document.querySelector('.filter-btn.active').dataset.category;
+      const maxPrice = parseInt(priceSlider.value);
+      
+      filteredProducts = allProducts.filter(product => {
+        return (selectedCategory === 'Tous' || product.categorie === selectedCategory) && 
+               product.prix <= maxPrice;
+      });
+      
+      // Tri
+      const sortMethod = document.getElementById('sort-select').value;
+      sortProducts(sortMethod);
+      
+      updateProductCount();
+      afficherProduits(filteredProducts);
+    }
+
+    // Trier les produits
+    function sortProducts(method) {
+      switch(method) {
+        case 'price-asc':
+          filteredProducts.sort((a, b) => a.prix - b.prix);
+          break;
+        case 'price-desc':
+          filteredProducts.sort((a, b) => b.prix - a.prix);
+          break;
+        case 'name-asc':
+          filteredProducts.sort((a, b) => a.nom.localeCompare(b.nom));
+          break;
+        default:
+          // Ne rien faire (tri par défaut)
+          break;
+      }
+    }
+
+    // Ajouter au panier
     function ajouterAuPanier(produit) {
       const panier = JSON.parse(localStorage.getItem("panier") || "[]");
       panier.push({ ...produit, quantite: 1 });
       localStorage.setItem("panier", JSON.stringify(panier));
-      alert(`${produit.nom} ajouté au panier`);
+      
+      // Mettre à jour le compteur du panier
+      document.getElementById('cart-count').textContent = panier.length;
+      
+      // Animation de confirmation
+      const notification = document.createElement('div');
+      notification.className = 'cart-notification';
+      notification.textContent = `${produit.nom} ajouté au panier`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.classList.add('show');
+      }, 10);
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 2000);
     }
 
-    // Affichage nom utilisateur
+    // Gestionnaire d'événements pour le sélecteur de tri
+    document.getElementById('sort-select').addEventListener('change', function() {
+      filterProducts();
+    });
+
+    // Gestionnaire d'événements pour les boutons de filtre par catégorie
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        filterProducts();
+      });
+    });
+
+    // Gestionnaire d'événements pour le bouton de réinitialisation des filtres
+    document.getElementById('reset-filters').addEventListener('click', function() {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-category="Tous"]').classList.add('active');
+      priceSlider.value = 100;
+      currentPrice.textContent = '100€';
+      document.getElementById('sort-select').value = 'default';
+      filterProducts();
+    });
+
+    // Gestionnaire d'événements pour les boutons de taille
+    document.querySelectorAll('.size-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        this.classList.toggle('active');
+        filterProducts();
+      });
+    });
+
+    // Gestionnaire d'événements pour les boutons de couleur
+    document.querySelectorAll('.color-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        this.classList.toggle('active');
+        filterProducts();
+      });
+    });
+
+    // Gestionnaire d'événements pour la newsletter
+    document.getElementById('newsletter-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = this.querySelector('input[type="email"]').value;
+      alert(`Merci ! Votre adresse e-mail ${email} a bien été enregistrée.`);
+      this.reset();
+    });
+
+    // Charger les produits au chargement de la page
     document.addEventListener("DOMContentLoaded", () => {
-  const user = JSON.parse(localStorage.getItem("currentUser"));
-  const display = document.getElementById("user-display");
+      chargerProduits();
+      
+      // Affichage nom utilisateur
+      const user = JSON.parse(localStorage.getItem("currentUser"));
+      const display = document.getElementById("user-display");
 
-  if (user) {
-    display.innerHTML = `
-      <span>👋 ${user.prenom} ${user.nom}</span>
-      <button onclick="logout()" style="margin-left: 10px;">Déconnexion</button>
-      <a href="panier.html" style="margin-left: 15px;">
-        <img src="MaillotsCAN/Logo-panier.png" alt="Panier" />
-      </a>
-    `;
-  }
+      if (user) {
+        display.innerHTML = `
+          <span>👋 ${user.prenom} ${user.nom}</span>
+          <button onclick="logout()" class="logout-btn">Déconnexion</button>
+        `;
+      }
+    });
 
-  // Charger les produits après avoir géré l'affichage utilisateur
-  if (typeof chargerProduits === "function") {
-    chargerProduits();
-  }
-});
-
-function logout() {
-  localStorage.removeItem("currentUser");
-  window.location.reload();
-}
-
+    function logout() {
+      localStorage.removeItem("currentUser");
+      window.location.reload();
+    }
   </script>
 </body>
 </html>
