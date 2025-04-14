@@ -20,7 +20,7 @@ const products = [
   { nom: "T-shirt Homme Coton", description: "T-shirt 100% coton, coupe classique", prix: 19.99, categorie: "Homme", image: "tshirt-homme.jpg" },
   { nom: "Jean Slim Homme", description: "Jean slim en denim bleu foncé", prix: 39.99, categorie: "Homme", image: "jean-homme.jpg" },
   { nom: "Chemise à Carreaux", description: "Chemise à carreaux en flanelle, idéale pour l'hiver", prix: 24.99, categorie: "Homme", image: "chemise-homme.jpg" },
-  { nom: "Veste en Jean", description: "Veste en jean bleu classique", prix: 59.99, categorie: "Homme", image: "veste-homme.jpg" },
+  { nom: "Veste en Jean", description: "Veste en jean bleu classique", prix: 59.99, categorie: "Homme", image: "vesteenjean1.jpg" },
 
   { nom: "Blouse Femme Chic", description: "Blouse fluide et élégante pour toutes les occasions", prix: 29.99, categorie: "Femme", image: "blouse-femme.jpg" },
   { nom: "Pantalon Large Femme", description: "Pantalon coupe large en lin, très confortable", prix: 34.99, categorie: "Femme", image: "pantalon-femme.jpg" },
