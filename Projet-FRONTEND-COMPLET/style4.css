@@ -978,3 +978,37 @@ header {
     max-width: 55%;
     padding-left: 30px;
 }
+/* Articles du panier */
+.cart-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.cart-item img {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}
+
+.cart-item h3 {
+  flex: 1;
+}
+
+#cart-total {
+  margin-top: 20px;
+  text-align: right;
+}
+
+#clear-cart {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#clear-cart:hover {
+  background-color: #555;
+}

@@ -4,8 +4,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 
 const userRoutes = require("./routes/userRoutes");
-const productRoutes = require("./backend-produits/routes/products"); // 👈 ton fichier actuel
-
+const productRoutes = require("./backend-produits/routes/products"); 
 dotenv.config();
 const app = express();
 
