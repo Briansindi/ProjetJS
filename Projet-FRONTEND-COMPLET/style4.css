@@ -1,6 +1,14 @@
 /* Styles spécifiques à la page produits */
 /* --- HEADER --- */
 /* --- SECTION HERO --- */
+
+body, h1, h2, h3, p, ul, li, a {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+  color: inherit;
+}
 .hero {
     position: relative;
     height: 90vh;
@@ -193,7 +201,7 @@ header {
   
   .nav-links li a {
     text-decoration: none;
-    color: #333;
+    color: black;
     font-weight: bold;
     transition: color 0.3s;
   }
@@ -358,58 +366,34 @@ header {
   
   /* --- FOOTER --- */
   footer {
-    background-color: #222;
-    color: #fff;
-    padding: 40px 0;
-    text-align: center;
-  }
-  
-  footer .container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 0 20px;
-  }
-  
-  footer p {
-    margin-bottom: 20px;
-  }
-  
-  footer ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    padding: 0;
-    margin-bottom: 20px;
-  }
-  
-  footer ul li a {
-    color: #fff;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  
-  footer ul li a:hover {
+    background-color: white;
     color: #f8ad38;
-  }
-  
-  footer .social-icons {
+    text-align: center;
+    padding: 20px 0;
+}
+
+footer ul {
     display: flex;
     justify-content: center;
-    gap: 15px;
-  }
-  
-  footer .social-icons img {
-    width: 30px;
-    height: 30px;
-    filter: brightness(0) invert(1);
-    transition: transform 0.3s;
-  }
-  
-  footer .social-icons img:hover {
-    transform: scale(1.1);
-  }
-  
+    margin-top: 10px;
+}
+
+footer ul li {
+    margin: 0 10px;
+}
+
+footer .social-icons {
+    margin-top: 10px;
+}
+
+footer .social-icons a {
+    margin: 0 10px;
+}
+
+footer .social-icons img {
+    width: 24px;
+    height: 24px;
+}
 /* Structure générale de la page */
 .products-main {
     padding-top: 60px;
@@ -419,7 +403,7 @@ header {
 .banner-section {
     position: relative;
     height: 300px;
-    background: url('MaillotsCAN/maillot-can-banner.png') no-repeat center center/cover;
+    background: url('MaillotsCAN/background-site.jpg') no-repeat center center/cover;
     display: flex;
     flex-direction: column;
     justify-content: center;
