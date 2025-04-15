@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Votre Panier</title>
+  <title>Votre Panier - ABY</title>
   <link rel="stylesheet" href="style4.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
 <header>
   <div class="container">
     <div class="logo">
-      <a href="index.html"><img src="MaillotsCAN/original.png" alt="Logo de l'entreprise"></a>
+      <a href="index.html"><img src="MaillotsCAN/original.png" alt="Logo ABY"></a>
     </div>
     <nav>
       <ul class="nav-links">
@@ -22,63 +23,370 @@
     </nav>
     <div class="user-icons">
       <div id="user-display"></div>
-      <a href="panier.html"><img src="MaillotsCAN/Logo-panier.png" alt="Panier"></a>
+      <a href="panier.html" class="cart-icon">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
     </div>
   </div>
 </header>
 
-<main class="container">
-  <h1>Votre Panier</h1>
+<main class="container cart-page">
+  <h1 class="page-title">Votre Panier</h1>
 
-  <!-- Zone où s’affiche dynamiquement le contenu du panier -->
-  <div id="panier-container"></div>
-  <div id="total-panier" style="margin-top: 20px; font-weight: bold;"></div>
+  <div class="cart-container">
+    <!-- Panier vide -->
+    <div id="empty-cart" class="empty-cart-message" style="display: none;">
+      <i class="fas fa-shopping-cart"></i>
+      <p>Votre panier est vide</p>
+      <a href="produits.html" class="btn">Découvrir nos produits</a>
+    </div>
 
-  <button onclick="afficherFormulaireCommande()" class="btn">Commander</button>
+    <!-- Panier avec articles -->
+    <div id="cart-content">
+      <div class="cart-items" id="cart-items-container">
+        <!-- Articles ajoutés dynamiquement -->
+      </div>
 
-  <form id="formulaire-commande" style="display:none; margin-top: 20px;">
-    <h2>Informations de Commande</h2>
-    <div class="form-group">
-      <label for="adresse">Adresse de livraison</label>
-      <input type="text" id="adresse" name="adresse" required />
+      <div class="cart-summary">
+        <div class="summary-card">
+          <h3>Récapitulatif de commande</h3>
+          <div class="summary-row">
+            <span>Sous-total</span>
+            <span id="subtotal">0.00€</span>
+          </div>
+          <div class="summary-row">
+            <span>Livraison</span>
+            <span id="shipping">Gratuite</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="total">0.00€</span>
+          </div>
+          <button id="checkout-btn" class="btn btn-primary">Passer la commande</button>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="paiement">Méthode de paiement</label>
-      <select id="paiement" name="paiement" required>
-        <option value="">-- Choisissez --</option>
-        <option value="carte">Carte bancaire</option>
-        <option value="paypal">PayPal</option>
-      </select>
+  </div>
+
+  <!-- Formulaire de commande -->
+  <div id="checkout-form" class="checkout-form" style="display: none;">
+    <h2>Informations de livraison</h2>
+    
+    <form id="order-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="first-name">Prénom</label>
+          <input type="text" id="first-name" name="first-name" required>
+        </div>
+        <div class="form-group">
+          <label for="last-name">Nom</label>
+          <input type="text" id="last-name" name="last-name" required>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="address">Adresse</label>
+        <input type="text" id="address" name="address" required>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="city">Ville</label>
+          <input type="text" id="city" name="city" required>
+        </div>
+        <div class="form-group">
+          <label for="zip">Code postal</label>
+          <input type="text" id="zip" name="zip" required>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="phone">Téléphone</label>
+        <input type="tel" id="phone" name="phone">
+      </div>
+      
+      <h2>Méthode de paiement</h2>
+
+      <div class="payment-methods">
+        <div class="payment-method">
+          <input type="radio" id="credit-card" name="payment" value="credit-card" checked>
+          <label for="credit-card">
+            <i class="far fa-credit-card"></i>
+            <span>Carte bancaire</span>
+          </label>
+        </div>
+        
+        <div class="payment-method">
+          <input type="radio" id="paypal" name="payment" value="paypal">
+          <label for="paypal">
+            <i class="fab fa-cc-paypal"></i>
+            <span>PayPal</span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Formulaire coordonnées bancaires -->
+      <div id="credit-card-form" class="payment-form">
+        <label for="card-name">Nom sur la carte</label>
+        <input type="text" id="card-name" name="card-name" placeholder="Jean Dupont">
+      
+        <label for="card-number">Numéro de carte</label>
+        <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456">
+      
+        <div class="form-row">
+          <div>
+            <label for="card-expiry">Date d'expiration</label>
+            <input type="text" id="card-expiry" name="card-expiry" placeholder="MM/AA">
+          </div>
+          <div>
+            <label for="card-cvc">CVC</label>
+            <input type="text" id="card-cvc" name="card-cvc" placeholder="123">
+          </div>
+        </div>
+      </div>
+      
+      <!-- JS pour affichage conditionnel -->
+      <script>
+        const creditCardRadio = document.getElementById("credit-card");
+        const paypalRadio = document.getElementById("paypal");
+        const creditCardForm = document.getElementById("credit-card-form");
+      
+        function togglePaymentForm() {
+          creditCardForm.style.display = creditCardRadio.checked ? "block" : "none";
+        }
+      
+        creditCardRadio.addEventListener("change", togglePaymentForm);
+        paypalRadio.addEventListener("change", togglePaymentForm);
+      
+        // Initialisation
+        togglePaymentForm();
+      </script>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" onclick="cancelCheckout()">Annuler</button>
+        <button type="submit" class="btn btn-primary">Confirmer la commande</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Confirmation de commande -->
+  <div id="order-confirmation" class="order-confirmation" style="display: none;">
+    <div class="confirmation-content">
+      <i class="fas fa-check-circle"></i>
+      <h2>Merci pour votre commande !</h2>
+      <p>Votre commande #<span id="order-number"></span> a bien été enregistrée.</p>
+      <p>Nous vous avons envoyé un email de confirmation à <span id="confirmation-email"></span>.</p>
+      <a href="facture.html" class="btn">Voir ma facture</a>
+      <a href="produits.html" class="btn btn-secondary">Continuer vos achats</a>
     </div>
-    <div class="form-group">
-      <button type="submit">Valider la commande</button>
-    </div>
-  </form>
+  </div>
 </main>
 
 <footer>
   <div class="container">
-    <p>&copy; 2025 ABY</p>
-    <ul>
-      <li><a href="#">CGV</a></li>
-      <li><a href="#">Politique de confidentialité</a></li>
-      <li><a href="#">Mentions légales</a></li>
-    </ul>
-    <div class="social-icons">
-      <a href="#"><img src="MaillotsCAN/icon-facebook.jpeg" alt="Facebook"></a>
-      <a href="#"><img src="MaillotsCAN/Icon-X.avif" alt="Twitter"></a>
-      <a href="#"><img src="MaillotsCAN/icon-Instagram.avif" alt="Instagram"></a>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h3>A propos</h3>
+        <ul>
+          <li><a href="#">Notre histoire</a></li>
+          <li><a href="#">Nos valeurs</a></li>
+          <li><a href="#">Carrières</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Aide</h3>
+        <ul>
+          <li><a href="#">Contactez-nous</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Livraison</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Légal</h3>
+        <ul>
+          <li><a href="#">CGV</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+          <li><a href="#">Mentions légales</a></li>
+        </ul>
+      </div>
+      <div class="footer-col newsletter">
+        <h3>Newsletter</h3>
+        <p>Abonnez-vous pour recevoir nos offres exclusives</p>
+        <form id="footer-newsletter">
+          <input type="email" placeholder="Votre email" required>
+          <button type="submit">S'abonner</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 ABY. Tous droits réservés.</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
     </div>
   </div>
 </footer>
 
 <script>
-  function afficherFormulaireCommande() {
-    const formulaire = document.getElementById('formulaire-commande');
-    formulaire.style.display = (formulaire.style.display === 'block') ? 'none' : 'block';
+  // Fonction pour afficher les articles du panier
+  function displayCartItems() {
+    const cart = JSON.parse(localStorage.getItem("panier")) || [];
+    const cartItemsContainer = document.getElementById("cart-items-container");
+    const emptyCartMessage = document.getElementById("empty-cart");
+    const cartContent = document.getElementById("cart-content");
+    
+    if (cart.length === 0) {
+      emptyCartMessage.style.display = "block";
+      cartContent.style.display = "none";
+      return;
+    }
+    
+    emptyCartMessage.style.display = "none";
+    cartContent.style.display = "block";
+    
+    cartItemsContainer.innerHTML = "";
+    
+    let subtotal = 0;
+    
+    cart.forEach(item => {
+      const itemTotal = item.prix * item.quantite;
+      subtotal += itemTotal;
+      
+      const cartItem = document.createElement("div");
+      cartItem.className = "cart-item";
+      cartItem.innerHTML = `
+        <div class="cart-item-img">
+          <img src="MaillotsCAN/${item.image}" alt="${item.nom}">
+        </div>
+        <div class="cart-item-details">
+          <h3>${item.nom}</h3>
+          <p>Taille: ${item.taille}</p>
+          <div class="cart-item-price">${item.prix.toFixed(2)}€</div>
+        </div>
+        <div class="cart-item-quantity">
+          <button class="quantity-btn" onclick="updateQuantity('${item._id}', '${item.taille}', -1)">-</button>
+          <span>${item.quantite}</span>
+          <button class="quantity-btn" onclick="updateQuantity('${item._id}', '${item.taille}', 1)">+</button>
+        </div>
+        <div class="cart-item-total">${itemTotal.toFixed(2)}€</div>
+        <button class="remove-btn" onclick="removeFromCart('${item._id}', '${item.taille}')">
+          <i class="fas fa-trash"></i>
+        </button>
+      `;
+      
+      cartItemsContainer.appendChild(cartItem);
+    });
+    
+    // Mettre à jour les totaux
+    document.getElementById("subtotal").textContent = subtotal.toFixed(2) + "€";
+    
+    const shipping = subtotal > 50 ? 0 : 4.99;
+    document.getElementById("shipping").textContent = shipping === 0 ? "Gratuite" : shipping.toFixed(2) + "€";
+    
+    const total = subtotal + shipping;
+    document.getElementById("total").textContent = total.toFixed(2) + "€";
+    
+    // Mettre à jour le compteur du panier
+    updateCartCount();
   }
+  
+  // Mettre à jour la quantité d'un article
+  function updateQuantity(productId, size, change) {
+    const cart = JSON.parse(localStorage.getItem("panier")) || [];
+    const itemIndex = cart.findIndex(item => item._id === productId && item.taille === size);
+    
+    if (itemIndex !== -1) {
+      cart[itemIndex].quantite += change;
+      
+      if (cart[itemIndex].quantite < 1) {
+        cart.splice(itemIndex, 1);
+      }
+      
+      localStorage.setItem("panier", JSON.stringify(cart));
+      displayCartItems();
+    }
+  }
+  
+  // Supprimer un article du panier
+  function removeFromCart(productId, size) {
+    const cart = JSON.parse(localStorage.getItem("panier")) || [];
+    const updatedCart = cart.filter(item => !(item._id === productId && item.taille === size));
+    
+    localStorage.setItem("panier", JSON.stringify(updatedCart));
+    displayCartItems();
+  }
+  
+  // Mettre à jour le compteur du panier
+  function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem("panier")) || [];
+    const totalItems = cart.reduce((total, item) => total + item.quantite, 0);
+    document.getElementById("cart-count").textContent = totalItems;
+  }
+  
+  // Passer à l'étape de paiement
+  function proceedToCheckout() {
+    document.getElementById("cart-content").style.display = "none";
+    document.getElementById("checkout-form").style.display = "block";
+  }
+  
+  // Annuler le paiement
+  function cancelCheckout() {
+    document.getElementById("checkout-form").style.display = "none";
+    document.getElementById("cart-content").style.display = "flex";
+  }
+  
+  // Confirmer la commande
+  function confirmOrder(event) {
+    event.preventDefault();
+    
+    // Enregistrer les données de commande
+    const orderData = {
+      firstName: document.getElementById("first-name").value,
+      lastName: document.getElementById("last-name").value,
+      address: document.getElementById("address").value,
+      city: document.getElementById("city").value,
+      zip: document.getElementById("zip").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value || "Non renseigné",
+      payment: document.querySelector("input[name='payment']:checked").value,
+      date: new Date().toISOString()
+    };
+    
+    localStorage.setItem("orderData", JSON.stringify(orderData));
+    
+    // Générer un numéro de commande aléatoire
+    const orderNumber = "ABY-" + Math.floor(Math.random() * 1000000);
+    document.getElementById("order-number").textContent = orderNumber;
+    
+    // Afficher l'email de confirmation
+    document.getElementById("confirmation-email").textContent = orderData.email;
+    
+    // Afficher la confirmation
+    document.getElementById("checkout-form").style.display = "none";
+    document.getElementById("order-confirmation").style.display = "block";
+    
+    // Vider le panier (optionnel, vous pouvez le garder pour historique)
+    // localStorage.removeItem("panier");
+    updateCartCount();
+  }
+  
+  // Initialiser la page
+  document.addEventListener("DOMContentLoaded", () => {
+    displayCartItems();
+    updateCartCount();
+    
+    // Écouteurs d'événements
+    document.getElementById("checkout-btn").addEventListener("click", proceedToCheckout);
+    document.getElementById("order-form").addEventListener("submit", confirmOrder);
+  });
 </script>
-<script src="js/app.js"></script>
 
 </body>
 </html>
