@@ -1,1 +1,409 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Facture - ABY</title>
+  <link rel="stylesheet" href="style4.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    /* Styles spécifiques à la facture */
+    .invoice-container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 30px;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-top: 100px;
+    }
+    
+    .invoice-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .invoice-title {
+      font-size: 24px;
+      color: #333;
+    }
+    
+    .invoice-logo img {
+      height: 60px;
+    }
+    
+    .invoice-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+    
+    .invoice-from, .invoice-to {
+      flex: 1;
+    }
+    
+    .invoice-from h3, .invoice-to h3 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+    
+    .invoice-details {
+      margin-top: 20px;
+    }
+    
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+    }
+    
+    .invoice-table th {
+      text-align: left;
+      padding: 10px;
+      background: #f5f5f5;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .invoice-table td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .invoice-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .invoice-totals {
+      margin-left: auto;
+      width: 300px;
+    }
+    
+    .invoice-totals table {
+      width: 100%;
+    }
+    
+    .invoice-totals td {
+      padding: 8px 0;
+    }
+    
+    .invoice-totals .total {
+      font-weight: bold;
+      font-size: 18px;
+      border-top: 2px solid #333;
+    }
+    
+    .invoice-footer {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      text-align: center;
+      color: #777;
+    }
+    
+    .invoice-actions {
+      margin-top: 30px;
+      text-align: center;
+    }
+    
+    .btn-download {
+      background-color: #f8ad38;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .btn-download:hover {
+      background-color: #e69c2e;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="logo">
+      <a href="index.html"><img src="MaillotsCAN/original.png" alt="Logo ABY"></a>
+    </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="produits.html">Produits</a></li>
+        <li><a href="register.html">Inscription</a></li>
+      </ul>
+    </nav>
+    <div class="user-icons">
+      <div id="user-display"></div>
+      <a href="panier.html" class="cart-icon">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="invoice-container" id="invoice">
+    <div class="invoice-header">
+      <div>
+        <h1 class="invoice-title">Facture</h1>
+        <div class="invoice-number">N° <span id="invoice-number"></span></div>
+      </div>
+      <div class="invoice-logo">
+        <img src="MaillotsCAN/original.png" alt="ABY">
+      </div>
+    </div>
+    
+    <div class="invoice-info">
+      <div class="invoice-from">
+        <h3>ABY</h3>
+        <p>7 Rue Vini JR</p>
+        <p>75019 Paris, France</p>
+        <p>Tél: +33 7 83 56 81 91</p>
+        <p>Email: contact@aby.com</p>
+      </div>
+      
+      <div class="invoice-to">
+        <h3>Facturé à</h3>
+        <p id="client-name"></p>
+        <p id="client-address"></p>
+        <p id="client-city"></p>
+        <p id="client-email"></p>
+        <p id="client-phone"></p>
+      </div>
+    </div>
+    
+    <div class="invoice-details">
+      <p><strong>Date de facturation:</strong> <span id="invoice-date"></span></p>
+      <p><strong>Méthode de paiement:</strong> <span id="payment-method"></span></p>
+    </div>
+    
+    <table class="invoice-table">
+      <thead>
+        <tr>
+          <th>Article</th>
+          <th>Taille</th>
+          <th>Prix unitaire</th>
+          <th>Quantité</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="invoice-items">
+        <!-- Articles ajoutés dynamiquement -->
+      </tbody>
+    </table>
+    
+    <div class="invoice-totals">
+      <table>
+        <tr>
+          <td>Sous-total:</td>
+          <td id="subtotal">0.00€</td>
+        </tr>
+        <tr>
+          <td>Livraison:</td>
+          <td id="shipping">0.00€</td>
+        </tr>
+        <tr class="total">
+          <td>Total:</td>
+          <td id="total">0.00€</td>
+        </tr>
+      </table>
+    </div>
+    
+    <div class="invoice-footer">
+      <p>Merci pour votre commande !</p>
+      <p>Les articles commandés ne peuvent être échangés ou remboursés qu'avec un ticket de caisse.</p>
+    </div>
+    
+    <div class="invoice-actions">
+      <button class="btn-download" onclick="generatePDF()">
+        <i class="fas fa-download"></i> Télécharger la facture
+      </button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h3>A propos</h3>
+        <ul>
+          <li><a href="#">Notre histoire</a></li>
+          <li><a href="#">Nos valeurs</a></li>
+          <li><a href="#">Carrières</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Aide</h3>
+        <ul>
+          <li><a href="#">Contactez-nous</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Livraison</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Légal</h3>
+        <ul>
+          <li><a href="#">CGV</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+          <li><a href="#">Mentions légales</a></li>
+        </ul>
+      </div>
+      <div class="footer-col newsletter">
+        <h3>Newsletter</h3>
+        <p>Abonnez-vous pour recevoir nos offres exclusives</p>
+        <form id="footer-newsletter">
+          <input type="email" placeholder="Votre email" required>
+          <button type="submit">S'abonner</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 ABY. Tous droits réservés.</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Initialiser jsPDF
+  const { jsPDF } = window.jspdf;
+
+  // Fonction pour générer un numéro de facture aléatoire
+  function generateInvoiceNumber() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const random = Math.floor(Math.random() * 1000);
+    return `ABY-${year}${month}${day}-${random}`;
+  }
+
+  // Fonction pour formater la date
+  function formatDate(date) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('fr-FR', options);
+  }
+
+  // Fonction pour afficher les informations de la commande
+  function displayInvoice() {
+    // Récupérer les données de la commande depuis localStorage
+    const orderData = JSON.parse(localStorage.getItem('orderData'));
+    const cart = JSON.parse(localStorage.getItem('panier')) || [];
+
+    if (!orderData || cart.length === 0) {
+      window.location.href = 'panier.html';
+      return;
+    }
+
+    // Afficher les informations de la facture
+    document.getElementById('invoice-number').textContent = generateInvoiceNumber();
+    document.getElementById('invoice-date').textContent = formatDate(new Date());
+
+    // Afficher les informations client
+    document.getElementById('client-name').textContent = `${orderData.firstName} ${orderData.lastName}`;
+    document.getElementById('client-address').textContent = orderData.address;
+    document.getElementById('client-city').textContent = `${orderData.zip} ${orderData.city}`;
+    document.getElementById('client-email').textContent = orderData.email;
+    document.getElementById('client-phone').textContent = orderData.phone || 'Non renseigné';
+    document.getElementById('payment-method').textContent = orderData.payment === 'credit-card' ? 'Carte bancaire' : 'PayPal';
+
+    // Afficher les articles
+    const invoiceItems = document.getElementById('invoice-items');
+    invoiceItems.innerHTML = '';
+
+    let subtotal = 0;
+    cart.forEach(item => {
+      const itemTotal = item.prix * item.quantite;
+      subtotal += itemTotal;
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${item.nom}</td>
+        <td>${item.taille}</td>
+        <td>${item.prix.toFixed(2)}€</td>
+        <td>${item.quantite}</td>
+        <td>${itemTotal.toFixed(2)}€</td>
+      `;
+      invoiceItems.appendChild(row);
+    });
+
+    // Calculer les totaux
+    const shipping = subtotal > 50 ? 0 : 4.99;
+    const total = subtotal + shipping;
+
+    document.getElementById('subtotal').textContent = subtotal.toFixed(2) + '€';
+    document.getElementById('shipping').textContent = shipping.toFixed(2) + '€';
+    document.getElementById('total').textContent = total.toFixed(2) + '€';
+
+    // Mettre à jour le compteur du panier (normalement vide après commande)
+    updateCartCount();
+  }
+
+  // Fonction pour générer le PDF
+  function generatePDF() {
+    const invoiceElement = document.getElementById('invoice');
+    
+    // Options pour html2canvas
+    const options = {
+      scale: 2, // Améliore la qualité du PDF
+      useCORS: true, // Permet de charger les images externes
+      logging: false // Désactive les logs
+    };
+
+    // Créer le PDF
+    html2canvas(invoiceElement, options).then(canvas => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210; // Largeur A4 en mm
+      const pageHeight = 295; // Hauteur A4 en mm
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      // Ajouter des pages supplémentaires si nécessaire
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      // Télécharger le PDF
+      pdf.save(`facture-${document.getElementById('invoice-number').textContent}.pdf`);
+    });
+  }
+
+  // Mettre à jour le compteur du panier
+  function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('panier')) || [];
+    const totalItems = cart.reduce((total, item) => total + item.quantite, 0);
+    document.getElementById('cart-count').textContent = totalItems;
+  }
+
+  // Initialiser la page
+  document.addEventListener('DOMContentLoaded', () => {
+    displayInvoice();
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title id="product-title">Nom du produit</title>
+  <link rel="stylesheet" href="style4.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">
+        <a href="index.html"><img src="MaillotsCAN/original.png" alt="Logo ABY"></a>
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="produits.html">Produits</a></li>
+          <li><a href="register.html">Inscription</a></li>
+        </ul>
+      </nav>
+      <div class="user-icons">
+        <div id="user-display"></div>
+        <a href="panier.html" class="cart-icon">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" id="cart-count">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="product-detail-main">
+    <div class="product-detail-container">
+      <div class="product-detail-img">
+        <div class="product-badge" id="product-badge">Nouveau</div>
+        <img id="product-img" src="" alt="Image du produit">
+        <div class="product-thumbnails" id="product-thumbnails">
+          <!-- Les miniatures seront ajoutées dynamiquement -->
+        </div>
+      </div>
+      <div class="product-detail-info">
+        <div class="product-header">
+          <h1 id="product-name">Nom du produit</h1>
+          <div class="product-rating">
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+            <span class="review-count">(24 avis)</span>
+          </div>
+        </div>
+        
+        <p id="product-description">Description du produit</p>
+        
+        <div class="product-meta">
+          <span id="product-category"></span>
+          <span id="product-sku">Réf: ABY-001</span>
+        </div>
+        
+        <div class="product-price-container">
+          <p id="product-price" class="price">0.00€</p>
+          <p id="product-original-price" class="original-price"></p>
+          <span id="product-discount" class="discount-badge"></span>
+        </div>
+        
+        <div class="product-options">
+          <h3>Taille <span id="size-guide-link">(Guide des tailles)</span></h3>
+          <div class="size-options">
+            <select id="product-size">
+              <option value="" disabled selected>Choisissez une taille</option>
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="product-actions">
+          <button id="add-to-cart" class="btn-add-to-cart">
+            <i class="fas fa-shopping-cart"></i> Ajouter au panier
+          </button>
+          <button id="wishlist-btn" class="btn-wishlist">
+            <i class="far fa-heart"></i> Ajouter à la liste de souhaits
+          </button>
+        </div>
+        
+        <div class="product-delivery-info">
+          <div class="delivery-option">
+            <i class="fas fa-truck"></i>
+            <span>Livraison gratuite à partir de 50€</span>
+          </div>
+          <div class="delivery-option">
+            <i class="fas fa-undo"></i>
+            <span>Retours gratuits sous 30 jours</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <section class="product-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="description">Description</button>
+        <button class="tab-btn" data-tab="details">Détails</button>
+        <button class="tab-btn" data-tab="reviews">Avis</button>
+      </div>
+      <div class="tabs-content">
+        <div id="description" class="tab-pane active">
+          <p id="product-full-description"></p>
+        </div>
+        <div id="details" class="tab-pane">
+          <ul id="product-details-list"></ul>
+        </div>
+        <div id="reviews" class="tab-pane">
+          <div class="reviews-container" id="reviews-container"></div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="related-products">
+      <h2>Produits similaires</h2>
+      <div class="related-products-grid" id="related-products">
+        <!-- Produits similaires chargés dynamiquement -->
+      </div>
+    </section>
+  </main>
+
+  <section class="newsletter">
+    <div class="newsletter-content">
+      <h2>Inscrivez-vous à notre newsletter</h2>
+      <p>Recevez en avant-première nos nouvelles collections et offres exclusives</p>
+      <form id="newsletter-form">
+        <input type="email" placeholder="Votre adresse email" required>
+        <button type="submit">S'inscrire</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2025 ABY</p>
+    <ul>
+      <li><a href="#">CGV</a></li>
+      <li><a href="#">Politique de confidentialité</a></li>
+      <li><a href="#">Mentions légales</a></li>
+    </ul>
+    <div class="social-icons">
+      <a href="#"><img src="MaillotsCAN/icon-facebook.jpeg" alt="Facebook"></a>
+      <a href="#"><img src="MaillotsCAN/Icon-X.avif" alt="Twitter"></a>
+      <a href="#"><img src="MaillotsCAN/icon-Instagram.avif" alt="Instagram"></a>
+    </div>
+  </div>
+</footer>
+
+  <!-- Notification d'ajout au panier -->
+  <div id="cart-notification" class="cart-notification">
+    <div class="notification-content">
+      <i class="fas fa-check-circle"></i>
+      <span id="notification-message">Produit ajouté au panier</span>
+    </div>
+  </div>
+
+  <script>
+    // Récupérer l'ID du produit depuis l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    
+    // Données des produits (avec plus de détails)
+    const localProducts = [
+      { 
+        _id: "1", 
+        nom: "T-shirt Homme Coton", 
+        description: "T-shirt 100% coton, coupe classique", 
+        fullDescription: "Ce t-shirt en coton bio offre un confort optimal toute la journée. Matière douce et respirante, coupe régulière, col rond. Lavage en machine à 30°C.",
+        prix: 19.99, 
+        originalPrix: 24.99,
+        categorie: "Homme", 
+        image: "tshirt-homme.jpg",
+        images: ["tshirt-homme.jpg", "tshirt-homme-2.jpg", "tshirt-homme-3.jpg"],
+        details: ["100% coton bio", "Lavable en machine", "Fabriqué en France", "Coupe régulière"],
+        tags: ["nouveau", "solde"],
+        reviews: [
+          { name: "Jean D.", rating: 5, comment: "Très confortable, taille parfaite." },
+          { name: "Marie L.", rating: 4, comment: "Joli produit, légèrement transparent." }
+        ]
+      },
+      {
+  _id: "2",
+  nom: "Jean Slim Homme",
+  description: "Jean slim en denim bleu foncé",
+  fullDescription: "Jean slim confortable en denim stretch, parfait pour un look moderne. Finitions soignées, poches classiques, fermeture à glissière et bouton.",
+  prix: 39.99,
+  originalPrix: 49.99,
+  categorie: "Homme",
+  image: "pantalonclassique.png",
+  images: ["pantalonclassique.png", "jean-slim-2.jpg"],
+  details: ["Denim stretch", "Coupe slim", "5 poches", "Lavage en machine à 40°C"],
+  tags: ["best-seller"],
+  reviews: [
+    { name: "Léo M.", rating: 5, comment: "Parfaitement ajusté, super qualité." },
+    { name: "Thomas B.", rating: 4, comment: "Un peu long pour ma taille, mais très stylé." }
+  ]
+},
+{
+  _id: "3",
+  nom: "Chemise à Carreaux",
+  description: "Chemise à carreaux en flanelle, idéale pour l'hiver",
+  fullDescription: "Chemise chaude en flanelle douce avec motifs à carreaux. Parfaite pour les journées fraîches. Coupe droite, col boutonné.",
+  prix: 24.99,
+  originalPrix: 29.99,
+  categorie: "Homme",
+  image: "chemise-homme.jpg",
+  images: ["chemise-homme.jpg", "chemise-homme-2.jpg"],
+  details: ["Flanelle douce", "Motifs à carreaux", "Col boutonné", "Manches longues"],
+  tags: ["nouveau"],
+  reviews: [
+    { name: "Adrien R.", rating: 5, comment: "Super chaude et confortable." },
+    { name: "Lucas F.", rating: 4, comment: "Couleurs fidèles aux photos." }
+  ]
+},
+{
+  _id: "4",
+  nom: "Veste en Jean",
+  description: "Veste en jean bleu classique",
+  fullDescription: "Classique indémodable, cette veste en jean bleu foncé est parfaite pour le printemps ou l'automne. Coupe droite, boutons métalliques, poches poitrine.",
+  prix: 59.99,
+  originalPrix: 69.99,
+  categorie: "Homme",
+  image: "vesteenjean1.png",
+  images: ["vesteenjean1.png", "veste-jean-2.jpg"],
+  details: ["100% coton", "Boutons métalliques", "Poches à rabat", "Style vintage"],
+  tags: ["solde"],
+  reviews: [
+    { name: "Nicolas S.", rating: 4, comment: "Bonne qualité, un peu rigide au début." }
+  ]
+},
+{
+  _id: "5",
+  nom: "Blouse Femme Chic",
+  description: "Blouse fluide et élégante pour toutes les occasions",
+  fullDescription: "Blouse féminine au tissu fluide, manches longues et col en V. Élégante et confortable pour le bureau ou les sorties.",
+  prix: 29.99,
+  originalPrix: 34.99,
+  categorie: "Femme",
+  image: "blouse-femme.jpg",
+  images: ["blouse-femme.jpg", "blouse-femme-2.jpg"],
+  details: ["Tissu fluide", "Col V", "Manches longues", "Coupe élégante"],
+  tags: ["nouveau"],
+  reviews: [
+    { name: "Emma P.", rating: 5, comment: "Très belle coupe et agréable à porter." }
+  ]
+},
+{
+  _id: "6",
+  nom: "Pantalon Large Femme",
+  description: "Pantalon coupe large en lin, très confortable",
+  fullDescription: "Ce pantalon large en lin offre un confort optimal et une élégance décontractée. Taille élastique avec cordon, idéal pour l’été.",
+  prix: 34.99,
+  originalPrix: 39.99,
+  categorie: "Femme",
+  image: "pantalon-femme.jpg",
+  images: ["pantalon-femme.jpg", "pantalon-femme-2.jpg"],
+  details: ["100% lin", "Taille élastique", "Coupe large", "Respirant"],
+  tags: ["eco", "best-seller"],
+  reviews: [
+    { name: "Julie C.", rating: 5, comment: "Parfait pour les fortes chaleurs." }
+  ]
+},
+{
+  _id: "7",
+  nom: "Robe d'Été Fleurie",
+  description: "Robe légère à fleurs, parfaite pour les journées ensoleillées",
+  fullDescription: "Robe d'été en tissu léger, imprimé fleuri, fines bretelles et coupe évasée. Idéale pour la plage ou les sorties en ville.",
+  prix: 44.99,
+  originalPrix: 54.99,
+  categorie: "Femme",
+  image: "robe-femme.jpg",
+  images: ["robe-femme.jpg", "robe-femme-2.jpg"],
+  details: ["Tissu léger", "Imprimé fleuri", "Bretelles réglables", "Coupe évasée"],
+  tags: ["nouveau", "été"],
+  reviews: [
+    { name: "Sophie T.", rating: 5, comment: "Très jolie robe, bien coupée." }
+  ]
+},
+{
+  _id: "8",
+  nom: "Cardigan Tricoté",
+  description: "Cardigan doux et chaud pour l'automne",
+  fullDescription: "Cardigan en maille épaisse, col en V, boutonné sur le devant. Parfait pour superposer pendant les journées fraîches.",
+  prix: 39.99,
+  originalPrix: 49.99,
+  categorie: "Femme",
+  image: "cardigan-femme.jpg",
+  images: ["cardigan-femme.jpg", "cardigan-femme-2.jpg"],
+  details: ["Maille épaisse", "Col en V", "Coupe droite", "Boutons en bois"],
+  tags: ["automne", "confort"],
+  reviews: [
+    { name: "Claire G.", rating: 4, comment: "Très doux mais taille un peu grand." }
+  ]
+},
+{
+  _id: "9",
+  nom: "T-shirt Enfant Motif",
+  description: "T-shirt coloré avec motifs amusants",
+  fullDescription: "T-shirt pour enfants avec motifs colorés et amusants. Parfait pour égayer la garde-robe de votre enfant.",
+  prix: 14.99,
+  originalPrix: 19.99,
+  categorie: "Enfant",
+  image: "tshirt-enfant.jpg",
+  images: ["tshirt-enfant.jpg", "tshirt-enfant-2.jpg"],
+  details: ["100% coton", "Motifs rigolos", "Coupe classique", "Facile à laver"],
+  tags: ["enfant", "coloré"],
+  reviews: [
+    { name: "Anne M.", rating: 5, comment: "Ma fille adore les dessins !" }
+  ]
+},
+{
+  _id: "10",
+  nom: "Short Enfant Été",
+  description: "Short léger pour l'été, 100% coton",
+  fullDescription: "Short enfant léger et respirant, parfait pour jouer dehors pendant l'été. Taille élastique pour plus de confort.",
+  prix: 12.99,
+  originalPrix: 16.99,
+  categorie: "Enfant",
+  image: "short-enfant.jpg",
+  images: ["short-enfant.jpg", "short-enfant-2.jpg"],
+  details: ["100% coton", "Taille élastique", "Coupe droite", "Léger"],
+  tags: ["été", "promo"],
+  reviews: [
+    { name: "Karine D.", rating: 5, comment: "Très pratique et résistant." }
+  ]
+},
+{
+  _id: "11",
+  nom: "Pyjama Enfant",
+  description: "Pyjama deux pièces confortable pour les nuits fraîches",
+  fullDescription: "Pyjama chaud avec haut à manches longues et pantalon assorti. Motifs ludiques, matière douce pour la peau.",
+  prix: 17.99,
+  originalPrix: 22.99,
+  categorie: "Enfant",
+  image: "pyjama-enfant.jpg",
+  images: ["pyjama-enfant.jpg", "pyjama-enfant-2.jpg"],
+  details: ["Coton doux", "Deux pièces", "Motifs amusants", "Manches longues"],
+  tags: ["nuit", "enfant"],
+  reviews: [
+    { name: "Laura V.", rating: 5, comment: "Mon fils dort super bien dedans." }
+  ]
+},
+{
+  _id: "12",
+  nom: "Sweat Enfant",
+  description: "Sweat à capuche enfant avec motif animal",
+  fullDescription: "Sweat à capuche pour enfants avec imprimé animalier, doublure chaude et poches pratiques. Confortable et stylé.",
+  prix: 22.99,
+  originalPrix: 27.99,
+  categorie: "Enfant",
+  image: "sweat-enfant.jpg",
+  images: ["sweat-enfant.jpg", "sweat-enfant-2.jpg"],
+  details: ["Capuche doublée", "Imprimé animal", "Coton majoritaire", "Poches avant"],
+  tags: ["hiver", "confort"],
+  reviews: [
+    { name: "Marc H.", rating: 4, comment: "Très beau sweat, un peu large." }
+  ]
+},
+{
+  _id: "13",
+  nom: "Sac à Main Cuir",
+  description: "Sac à main en simili cuir avec bandoulière",
+  fullDescription: "Sac élégant en simili cuir avec multiples poches et bandoulière réglable. Idéal pour un usage quotidien ou une sortie chic.",
+  prix: 49.99,
+  originalPrix: 59.99,
+  categorie: "Accessoires",
+  image: "sac-femme.jpg",
+  images: ["sac-femme.jpg", "sac-femme-2.jpg"],
+  details: ["Simili cuir", "Bandoulière réglable", "Fermeture zippée", "Plusieurs poches"],
+  tags: ["accessoire", "élégant"],
+  reviews: [
+    { name: "Isabelle R.", rating: 5, comment: "J'adore ce sac, très pratique." }
+  ]
+},
+{
+  _id: "14",
+  nom: "Casquette Classique",
+  description: "Casquette unisexe en coton",
+  fullDescription: "Casquette sobre et confortable en coton. S'adapte à toutes les têtes grâce à sa fermeture ajustable. Idéale au soleil.",
+  prix: 15.99,
+  originalPrix: 18.99,
+  categorie: "Accessoires",
+  image: "casquette-homme.jpg",
+  images: ["casquette-homme.jpg", "casquette-homme-2.jpg"],
+  details: ["100% coton", "Réglable", "Unisexe", "Protège du soleil"],
+  tags: ["casual", "été"],
+  reviews: [
+    { name: "Julien T.", rating: 5, comment: "Simple et efficace, je recommande." }
+  ]
+},
+{
+  _id: "15",
+  nom: "Lunettes de Soleil",
+  description: "Lunettes UV tendance unisexe",
+  fullDescription: "Lunettes de soleil unisexes avec protection UV400. Monture légère et look moderne. Parfaites pour la plage ou la ville.",
+  prix: 18.99,
+  originalPrix: 22.99,
+  categorie: "Accessoires",
+  image: "lunettes.jpg",
+  images: ["lunettes.jpg", "lunettes-2.jpg"],
+  details: ["Protection UV400", "Monture légère", "Verres teintés", "Design moderne"],
+  tags: ["été", "unisexe"],
+  reviews: [
+    { name: "Camille D.", rating: 5, comment: "Très stylées et protègent bien." }
+  ]
+}
+      
+    ];
+
+    // Fonction pour charger les détails du produit
+    async function loadProductDetails() {
+      try {
+        let product;
+        // Essayer de récupérer depuis l'API
+        const response = await fetch(`http://localhost:5002/api/products/${productId}`);
+        if (response.ok) {
+          product = await response.json();
+        } else {
+          // Si l'API ne répond pas, utiliser les données locales
+          product = localProducts.find(p => p._id === productId);
+        }
+        
+        if (product) {
+          displayProductDetails(product);
+          setupAddToCart(product);
+          loadRelatedProducts(product);
+        } else {
+          document.querySelector('.product-detail-container').innerHTML = '<p class="product-not-found">Produit non trouvé</p>';
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement du produit:", error);
+        const product = localProducts.find(p => p._id === productId);
+        if (product) {
+          displayProductDetails(product);
+          setupAddToCart(product);
+          loadRelatedProducts(product);
+        } else {
+          document.querySelector('.product-detail-container').innerHTML = '<p class="product-not-found">Produit non trouvé</p>';
+        }
+      }
+    }
+    
+    // Afficher les détails du produit
+    function displayProductDetails(product) {
+      // Infos de base
+      document.getElementById('product-title').textContent = product.nom;
+      document.getElementById('product-img').src = `MaillotsCAN/${product.image}`;
+      document.getElementById('product-name').textContent = product.nom;
+      document.getElementById('product-description').textContent = product.description;
+      document.getElementById('product-full-description').textContent = product.fullDescription || product.description;
+      
+      // Prix
+      const priceElement = document.getElementById('product-price');
+      priceElement.textContent = `${product.prix.toFixed(2)}€`;
+      
+      if (product.originalPrix && product.originalPrix > product.prix) {
+        const originalPriceElement = document.getElementById('product-original-price');
+        originalPriceElement.textContent = `${product.originalPrix.toFixed(2)}€`;
+        
+        const discount = Math.round((1 - product.prix / product.originalPrix) * 100);
+        document.getElementById('product-discount').textContent = `-${discount}%`;
+      }
+      
+      // Catégorie et SKU
+      document.getElementById('product-category').textContent = product.categorie;
+      
+      // Badges
+      const badgeElement = document.getElementById('product-badge');
+      if (product.tags && product.tags.includes("nouveau")) {
+        badgeElement.textContent = "Nouveau";
+        badgeElement.style.display = "block";
+      } else if (product.tags && product.tags.includes("solde")) {
+        badgeElement.textContent = "Solde";
+        badgeElement.style.display = "block";
+      } else {
+        badgeElement.style.display = "none";
+      }
+      
+      // Miniatures
+      const thumbnailsContainer = document.getElementById('product-thumbnails');
+      thumbnailsContainer.innerHTML = '';
+      const images = product.images || [product.image];
+      images.forEach((img, index) => {
+        const thumbnail = document.createElement('img');
+        thumbnail.src = `MaillotsCAN/${img}`;
+        thumbnail.alt = `Vue ${index + 1} du produit`;
+        thumbnail.addEventListener('click', () => {
+          document.getElementById('product-img').src = thumbnail.src;
+        });
+        thumbnailsContainer.appendChild(thumbnail);
+      });
+      
+      // Détails
+      const detailsList = document.getElementById('product-details-list');
+      detailsList.innerHTML = '';
+      product.details.forEach(detail => {
+        const li = document.createElement('li');
+        li.textContent = detail;
+        detailsList.appendChild(li);
+      });
+      
+      // Avis
+      const reviewsContainer = document.getElementById('reviews-container');
+      reviewsContainer.innerHTML = '';
+      if (product.reviews && product.reviews.length > 0) {
+        product.reviews.forEach(review => {
+          const reviewElement = document.createElement('div');
+          reviewElement.className = 'review';
+          reviewElement.innerHTML = `
+            <div class="review-header">
+              <h4>${review.name}</h4>
+              <div class="review-rating">
+                ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+              </div>
+            </div>
+            <p>${review.comment}</p>
+          `;
+          reviewsContainer.appendChild(reviewElement);
+        });
+      } else {
+        reviewsContainer.innerHTML = '<p>Aucun avis pour ce produit.</p>';
+      }
+      
+      // Onglets
+      setupTabs();
+    }
+    
+    // Configurer les onglets
+    function setupTabs() {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabPanes = document.querySelectorAll('.tab-pane');
+      
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Retirer la classe active de tous les boutons et panneaux
+          tabBtns.forEach(b => b.classList.remove('active'));
+          tabPanes.forEach(p => p.classList.remove('active'));
+          
+          // Ajouter la classe active au bouton cliqué et au panneau correspondant
+          btn.classList.add('active');
+          const tabId = btn.getAttribute('data-tab');
+          document.getElementById(tabId).classList.add('active');
+        });
+      });
+    }
+    
+    // Charger les produits similaires
+    function loadRelatedProducts(product) {
+      const relatedProductsContainer = document.getElementById('related-products');
+      relatedProductsContainer.innerHTML = '';
+      
+      // Filtrer les produits de la même catégorie (exemple simplifié)
+      const related = localProducts.filter(p => 
+        p.categorie === product.categorie && p._id !== product._id
+      ).slice(0, 4);
+      
+      if (related.length > 0) {
+        related.forEach(prod => {
+          const productElement = document.createElement('div');
+          productElement.className = 'related-product';
+          productElement.innerHTML = `
+            <a href="produit.html?id=${prod._id}">
+              <img src="MaillotsCAN/${prod.image}" alt="${prod.nom}">
+              <h3>${prod.nom}</h3>
+              <p class="price">${prod.prix.toFixed(2)}€</p>
+            </a>
+          `;
+          relatedProductsContainer.appendChild(productElement);
+        });
+      } else {
+        relatedProductsContainer.innerHTML = '<p>Aucun produit similaire trouvé.</p>';
+      }
+    }
+    
+    // Configurer le bouton "Ajouter au panier"
+    function setupAddToCart(product) {
+      document.getElementById('add-to-cart').addEventListener('click', () => {
+        ajouterAuPanier(product);
+      });
+      
+      // Bouton liste de souhaits
+      document.getElementById('wishlist-btn').addEventListener('click', () => {
+        addToWishlist(product);
+      });
+    }
+    
+    // Fonction pour ajouter au panier
+    function ajouterAuPanier(product) {
+      const tailleSelectionnee = document.getElementById('product-size').value;
+      if (!tailleSelectionnee) {
+        showNotification("Veuillez sélectionner une taille", false);
+        return;
+      }
+      
+      const panier = JSON.parse(localStorage.getItem("panier") || "[]");
+      const produitExistant = panier.find(p => 
+        p._id === product._id && p.taille === tailleSelectionnee
+      );
+      
+      if (produitExistant) {
+        produitExistant.quantite += 1;
+      } else {
+        panier.push({ 
+          ...product, 
+          quantite: 1,
+          taille: tailleSelectionnee,
+          dateAjout: new Date().toISOString()
+        });
+      }
+      
+      localStorage.setItem("panier", JSON.stringify(panier));
+      updateCartCount();
+      showNotification(`${product.nom} (${tailleSelectionnee}) ajouté au panier`, true);
+    }
+    
+    // Fonction pour ajouter à la liste de souhaits
+    function addToWishlist(product) {
+      const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+      const exists = wishlist.some(p => p._id === product._id);
+      
+      if (!exists) {
+        wishlist.push(product);
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        showNotification(`${product.nom} ajouté à votre liste de souhaits`, true);
+        
+        // Changer l'icône pour indiquer qu'il est dans la liste
+        const wishlistBtn = document.getElementById('wishlist-btn');
+        wishlistBtn.innerHTML = '<i class="fas fa-heart"></i> Dans votre liste';
+        wishlistBtn.classList.add('in-wishlist');
+      } else {
+        showNotification("Ce produit est déjà dans votre liste de souhaits", false);
+      }
+    }
+    
+    // Afficher une notification
+    function showNotification(message, isSuccess) {
+      const notification = document.getElementById('cart-notification');
+      const messageElement = document.getElementById('notification-message');
+      
+      messageElement.textContent = message;
+      notification.className = isSuccess ? 'cart-notification success' : 'cart-notification error';
+      notification.style.display = 'flex';
+      
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+    
+    // Mettre à jour le compteur du panier
+    function updateCartCount() {
+      const panier = JSON.parse(localStorage.getItem("panier") || "[]");
+      const totalItems = panier.reduce((total, item) => total + item.quantite, 0);
+      document.getElementById('cart-count').textContent = totalItems;
+    }
+    
+    // Vérifier si le produit est dans la liste de souhaits
+    function checkWishlist(productId) {
+      const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+      const exists = wishlist.some(p => p._id === productId);
+      
+      if (exists) {
+        const wishlistBtn = document.getElementById('wishlist-btn');
+        wishlistBtn.innerHTML = '<i class="fas fa-heart"></i> Dans votre liste';
+        wishlistBtn.classList.add('in-wishlist');
+      }
+    }
+    
+    // Charger les détails du produit au chargement de la page
+    document.addEventListener("DOMContentLoaded", () => {
+      if (productId) {
+        loadProductDetails();
+        checkWishlist(productId);
+      } else {
+        document.querySelector('.product-detail-container').innerHTML = '<p class="product-not-found">Aucun produit sélectionné</p>';
+      }
+      
+      updateCartCount();
+    });
+  </script>
+</body>
+</html>
