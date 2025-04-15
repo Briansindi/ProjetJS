@@ -7,8 +7,8 @@
   <title>Facture - ABY</title>
   <link rel="stylesheet" href="style4.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     /* Styles spécifiques à la facture */
     .invoice-container {
@@ -281,8 +281,14 @@
 </footer>
 
 <script>
-  // Initialiser jsPDF
-  const { jsPDF } = window.jspdf;
+   document.addEventListener('DOMContentLoaded', () => {
+    displayInvoice();
+  });
+
+  // Fonction pour initialiser jsPDF depuis le namespace UMD
+  function getJsPDFInstance() {
+    return window.jspdf?.jsPDF;
+  }
 
   // Fonction pour générer un numéro de facture aléatoire
   function generateInvoiceNumber() {
@@ -302,57 +308,85 @@
 
   // Fonction pour afficher les informations de la commande
   function displayInvoice() {
-  const orderData = JSON.parse(localStorage.getItem('currentOrder'));
-  if (!orderData || !orderData.items || orderData.items.length === 0) {
-    window.location.href = 'panier.html';
-    return;
+    const orderData = JSON.parse(localStorage.getItem('currentOrder'));
+    if (!orderData || !orderData.items || orderData.items.length === 0) {
+      window.location.href = 'panier.html';
+      return;
+    }
+
+    const cart = orderData.items;
+
+    document.getElementById('invoice-number').textContent = orderData.orderNumber || generateInvoiceNumber();
+    document.getElementById('invoice-date').textContent = formatDate(new Date(orderData.date));
+    document.getElementById('client-name').textContent = `${orderData.firstName} ${orderData.lastName}`;
+    document.getElementById('client-address').textContent = orderData.address;
+    document.getElementById('client-city').textContent = `${orderData.zip} ${orderData.city}`;
+    document.getElementById('client-email').textContent = orderData.email;
+    document.getElementById('client-phone').textContent = orderData.phone || 'Non renseigné';
+    document.getElementById('payment-method').textContent = orderData.payment === 'credit-card' ? 'Carte bancaire' : 'PayPal';
+
+    const invoiceItems = document.getElementById('invoice-items');
+    invoiceItems.innerHTML = '';
+
+    let subtotal = 0;
+    cart.forEach(item => {
+      const itemTotal = item.prix * item.quantite;
+      subtotal += itemTotal;
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${item.nom}</td>
+        <td>${item.taille}</td>
+        <td>${item.prix.toFixed(2)}€</td>
+        <td>${item.quantite}</td>
+        <td>${itemTotal.toFixed(2)}€</td>
+      `;
+      invoiceItems.appendChild(row);
+    });
+
+    const shipping = subtotal > 50 ? 0 : 4.99;
+    const total = subtotal + shipping;
+
+    document.getElementById('subtotal').textContent = subtotal.toFixed(2) + '€';
+    document.getElementById('shipping').textContent = shipping.toFixed(2) + '€';
+    document.getElementById('total').textContent = total.toFixed(2) + '€';
+
+    updateCartCount?.(); // au cas où la fonction n'est pas définie globalement
   }
 
-  const cart = orderData.items;
+  // Fonction pour générer le PDF
+  function generatePDF() {
+    const jsPDF = getJsPDFInstance();
+    if (!jsPDF) {
+      alert("jsPDF n'est pas correctement chargé.");
+      return;
+    }
 
-  document.getElementById('invoice-number').textContent = orderData.orderNumber || generateInvoiceNumber();
-  document.getElementById('invoice-date').textContent = formatDate(new Date(orderData.date));
+    const invoiceElement = document.getElementById('invoice');
+    if (!invoiceElement) {
+      alert("Élément de facture introuvable.");
+      return;
+    }
 
-  document.getElementById('client-name').textContent = `${orderData.firstName} ${orderData.lastName}`;
-  document.getElementById('client-address').textContent = orderData.address;
-  document.getElementById('client-city').textContent = `${orderData.zip} ${orderData.city}`;
-  document.getElementById('client-email').textContent = orderData.email;
-  document.getElementById('client-phone').textContent = orderData.phone || 'Non renseigné';
-  document.getElementById('payment-method').textContent = orderData.payment === 'credit-card' ? 'Carte bancaire' : 'PayPal';
+    html2canvas(invoiceElement, { scale: 2 })
+      .then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-  const invoiceItems = document.getElementById('invoice-items');
-  invoiceItems.innerHTML = '';
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save('facture_ABY.pdf');
+      })
+      .catch(err => {
+        console.error("Erreur PDF :", err);
+        alert("Une erreur est survenue lors de la génération du PDF.");
+      });
+  }
 
-  let subtotal = 0;
-  cart.forEach(item => {
-    const itemTotal = item.prix * item.quantite;
-    subtotal += itemTotal;
-
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${item.nom}</td>
-      <td>${item.taille}</td>
-      <td>${item.prix.toFixed(2)}€</td>
-      <td>${item.quantite}</td>
-      <td>${itemTotal.toFixed(2)}€</td>
-    `;
-    invoiceItems.appendChild(row);
-  });
-
-  const shipping = subtotal > 50 ? 0 : 4.99;
-  const total = subtotal + shipping;
-
-  document.getElementById('subtotal').textContent = subtotal.toFixed(2) + '€';
-  document.getElementById('shipping').textContent = shipping.toFixed(2) + '€';
-  document.getElementById('total').textContent = total.toFixed(2) + '€';
-
-  updateCartCount();
-}
-
-  // Initialiser la page
-  document.addEventListener('DOMContentLoaded', () => {
-    displayInvoice();
-  });
+  // Rendre generatePDF accessible globalement
+  window.generatePDF = generatePDF;
 </script>
 
 </body>
