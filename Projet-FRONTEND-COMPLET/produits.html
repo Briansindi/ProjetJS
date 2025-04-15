@@ -297,24 +297,28 @@ function afficherProduits(liste) {
     const div = document.createElement("div");
     div.className = "product-item";
     
-    // Utiliser uniquement le champ 'id' comme identifiant
-    const productId = produit.id; // Utilisation de l'id défini dans le produit
-
-    // Générer une note aléatoire
+    const productId = produit.id;
     const rating = (Math.random() * 2 + 3).toFixed(1);
     const ratingStars = generateRatingStars(rating);
 
-    // Générer un badge pour certains produits
     const badges = ['', '', 'NOUVEAU', 'PROMO', ''];
     const randomBadge = badges[Math.floor(Math.random() * badges.length)];
     const badgeHtml = randomBadge ? `<span class="product-badge">${randomBadge}</span>` : '';
 
-    // Générer des couleurs disponibles
     const colors = ['#000', '#2a52be', '#dc143c', '#228b22', '#fff'];
     const randomColors = shuffleArray([...colors]).slice(0, Math.floor(Math.random() * 3) + 2);
     const colorsHtml = randomColors.map(color => 
       `<span class="color-dot" style="background-color: ${color}; ${color === '#fff' ? 'border: 1px solid #ddd;' : ''}"></span>`
     ).join('');
+
+    // Création d'un objet produit simplifié pour le panier
+    const produitPanier = {
+      id: produit.id,
+      nom: produit.nom,
+      prix: produit.prix,
+      image: produit.image,
+      categorie: produit.categorie
+    };
 
     div.innerHTML = `
       ${badgeHtml}
@@ -343,12 +347,13 @@ function afficherProduits(liste) {
         </div>
         <div class="product-price-actions">
           <p class="product-price">${produit.prix.toFixed(2)}€</p>
-          <button class="add-to-cart-btn" data-produit='${JSON.stringify(produit).replace(/'/g, "&apos;")}'>
+          <button class="add-to-cart-btn" data-id="${productId}">
             Ajouter au panier
           </button>
         </div>
       </div>
     `;
+    
     grid.appendChild(div);
   });
       // Ajouter les écouteurs d'événements pour "Aperçu rapide"
