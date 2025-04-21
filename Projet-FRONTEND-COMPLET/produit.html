@@ -6,6 +6,70 @@
   <title id="product-title">Nom du produit</title>
   <link rel="stylesheet" href="style4.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Styles pour la galerie d'images */
+    .main-image-container {
+      position: relative;
+      height: 400px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .main-image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    .product-thumbnails {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+
+    .product-thumbnails img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 1px solid #ddd;
+      transition: border-color 0.3s;
+    }
+
+    .product-thumbnails img:hover,
+    .product-thumbnails img.active {
+      border-color: #333;
+    }
+
+    .gallery-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      z-index: 10;
+    }
+
+    .gallery-nav.prev {
+      left: 15px;
+    }
+
+    .gallery-nav.next {
+      right: 15px;
+    }
+
+    .gallery-nav:hover {
+      background: rgba(0,0,0,0.8);
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -34,7 +98,13 @@
     <div class="product-detail-container">
       <div class="product-detail-img">
         <div class="product-badge" id="product-badge">Nouveau</div>
-        <img id="product-img" src="" alt="Image du produit">
+        <!-- Image principale -->
+        <div class="main-image-container">
+          <img id="product-img" src="" alt="Image du produit">
+          <button class="gallery-nav prev" onclick="changeImage(-1)">‹</button>
+          <button class="gallery-nav next" onclick="changeImage(1)">›</button>
+        </div>
+        <!-- Miniatures -->
         <div class="product-thumbnails" id="product-thumbnails">
           <!-- Les miniatures seront ajoutées dynamiquement -->
         </div>
@@ -140,23 +210,22 @@
       </form>
     </div>
   </section>
-</main>
 
-<footer>
-  <div class="container">
-    <p>&copy; 2025 ABY</p>
-    <ul>
-      <li><a href="#">CGV</a></li>
-      <li><a href="#">Politique de confidentialité</a></li>
-      <li><a href="#">Mentions légales</a></li>
-    </ul>
-    <div class="social-icons">
-      <a href="#"><img src="MaillotsCAN/icon-facebook.jpeg" alt="Facebook"></a>
-      <a href="#"><img src="MaillotsCAN/Icon-X.avif" alt="Twitter"></a>
-      <a href="#"><img src="MaillotsCAN/icon-Instagram.avif" alt="Instagram"></a>
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 ABY</p>
+      <ul>
+        <li><a href="#">CGV</a></li>
+        <li><a href="#">Politique de confidentialité</a></li>
+        <li><a href="#">Mentions légales</a></li>
+      </ul>
+      <div class="social-icons">
+        <a href="#"><img src="MaillotsCAN/icon-facebook.jpeg" alt="Facebook"></a>
+        <a href="#"><img src="MaillotsCAN/Icon-X.avif" alt="Twitter"></a>
+        <a href="#"><img src="MaillotsCAN/icon-Instagram.avif" alt="Instagram"></a>
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
   <!-- Notification d'ajout au panier -->
   <div id="cart-notification" class="cart-notification">
@@ -167,6 +236,29 @@
   </div>
 
   <script>
+    // Variables globales pour la galerie
+    let currentProductImages = [];
+    let currentImageIndex = 0;
+
+    // Fonction pour extraire l'extension du fichier
+    function getFileExtension(filename) {
+      return filename.split('.').pop();
+    }
+
+    // Fonction pour générer les noms des images supplémentaires
+    function generateAdditionalImages(baseImage) {
+      if (!baseImage) return [];
+      
+      const ext = getFileExtension(baseImage);
+      const baseName = baseImage.replace('.' + ext, '');
+      
+      return [
+        baseImage,
+        `${baseName}-2.${ext}`,
+        `${baseName}-3.${ext}`
+      ];
+    }
+
     // Récupérer l'ID du produit depuis l'URL
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
@@ -182,7 +274,6 @@
         originalPrix: 24.99,
         categorie: "Homme", 
         image: "tshirt-homme.jpg",
-        images: ["tshirt-homme.jpg", "tshirt-homme-2.jpg", "tshirt-homme-3.jpg"],
         details: ["100% coton bio", "Lavable en machine", "Fabriqué en France", "Coupe régulière"],
         tags: ["nouveau", "solde"],
         reviews: [
@@ -191,232 +282,217 @@
         ]
       },
       {
-  _id: "2",
-  nom: "Jean Slim Homme",
-  description: "Jean slim en denim bleu foncé",
-  fullDescription: "Jean slim confortable en denim stretch, parfait pour un look moderne. Finitions soignées, poches classiques, fermeture à glissière et bouton.",
-  prix: 39.99,
-  originalPrix: 49.99,
-  categorie: "Homme",
-  image: "pantalonclassique.png",
-  images: ["pantalonclassique.png", "jean-slim-2.jpg"],
-  details: ["Denim stretch", "Coupe slim", "5 poches", "Lavage en machine à 40°C"],
-  tags: ["best-seller"],
-  reviews: [
-    { name: "Léo M.", rating: 5, comment: "Parfaitement ajusté, super qualité." },
-    { name: "Thomas B.", rating: 4, comment: "Un peu long pour ma taille, mais très stylé." }
-  ]
-},
-{
-  _id: "3",
-  nom: "Chemise à Carreaux",
-  description: "Chemise à carreaux en flanelle, idéale pour l'hiver",
-  fullDescription: "Chemise chaude en flanelle douce avec motifs à carreaux. Parfaite pour les journées fraîches. Coupe droite, col boutonné.",
-  prix: 24.99,
-  originalPrix: 29.99,
-  categorie: "Homme",
-  image: "chemise-homme.jpg",
-  images: ["chemise-homme.jpg", "chemise-homme-2.jpg"],
-  details: ["Flanelle douce", "Motifs à carreaux", "Col boutonné", "Manches longues"],
-  tags: ["nouveau"],
-  reviews: [
-    { name: "Adrien R.", rating: 5, comment: "Super chaude et confortable." },
-    { name: "Lucas F.", rating: 4, comment: "Couleurs fidèles aux photos." }
-  ]
-},
-{
-  _id: "4",
-  nom: "Veste en Jean",
-  description: "Veste en jean bleu classique",
-  fullDescription: "Classique indémodable, cette veste en jean bleu foncé est parfaite pour le printemps ou l'automne. Coupe droite, boutons métalliques, poches poitrine.",
-  prix: 59.99,
-  originalPrix: 69.99,
-  categorie: "Homme",
-  image: "vesteenjean1.png",
-  images: ["vesteenjean1.png", "veste-jean-2.jpg"],
-  details: ["100% coton", "Boutons métalliques", "Poches à rabat", "Style vintage"],
-  tags: ["solde"],
-  reviews: [
-    { name: "Nicolas S.", rating: 4, comment: "Bonne qualité, un peu rigide au début." }
-  ]
-},
-{
-  _id: "5",
-  nom: "Blouse Femme Chic",
-  description: "Blouse fluide et élégante pour toutes les occasions",
-  fullDescription: "Blouse féminine au tissu fluide, manches longues et col en V. Élégante et confortable pour le bureau ou les sorties.",
-  prix: 29.99,
-  originalPrix: 34.99,
-  categorie: "Femme",
-  image: "blouse-femme.jpg",
-  images: ["blouse-femme.jpg", "blouse-femme-2.jpg"],
-  details: ["Tissu fluide", "Col V", "Manches longues", "Coupe élégante"],
-  tags: ["nouveau"],
-  reviews: [
-    { name: "Emma P.", rating: 5, comment: "Très belle coupe et agréable à porter." }
-  ]
-},
-{
-  _id: "6",
-  nom: "Pantalon Large Femme",
-  description: "Pantalon coupe large en lin, très confortable",
-  fullDescription: "Ce pantalon large en lin offre un confort optimal et une élégance décontractée. Taille élastique avec cordon, idéal pour l’été.",
-  prix: 34.99,
-  originalPrix: 39.99,
-  categorie: "Femme",
-  image: "pantalon-femme.jpg",
-  images: ["pantalon-femme.jpg", "pantalon-femme-2.jpg"],
-  details: ["100% lin", "Taille élastique", "Coupe large", "Respirant"],
-  tags: ["eco", "best-seller"],
-  reviews: [
-    { name: "Julie C.", rating: 5, comment: "Parfait pour les fortes chaleurs." }
-  ]
-},
-{
-  _id: "7",
-  nom: "Robe d'Été Fleurie",
-  description: "Robe légère à fleurs, parfaite pour les journées ensoleillées",
-  fullDescription: "Robe d'été en tissu léger, imprimé fleuri, fines bretelles et coupe évasée. Idéale pour la plage ou les sorties en ville.",
-  prix: 44.99,
-  originalPrix: 54.99,
-  categorie: "Femme",
-  image: "robe-femme.jpg",
-  images: ["robe-femme.jpg", "robe-femme-2.jpg"],
-  details: ["Tissu léger", "Imprimé fleuri", "Bretelles réglables", "Coupe évasée"],
-  tags: ["nouveau", "été"],
-  reviews: [
-    { name: "Sophie T.", rating: 5, comment: "Très jolie robe, bien coupée." }
-  ]
-},
-{
-  _id: "8",
-  nom: "Cardigan Tricoté",
-  description: "Cardigan doux et chaud pour l'automne",
-  fullDescription: "Cardigan en maille épaisse, col en V, boutonné sur le devant. Parfait pour superposer pendant les journées fraîches.",
-  prix: 39.99,
-  originalPrix: 49.99,
-  categorie: "Femme",
-  image: "cardigan-femme.jpg",
-  images: ["cardigan-femme.jpg", "cardigan-femme-2.jpg"],
-  details: ["Maille épaisse", "Col en V", "Coupe droite", "Boutons en bois"],
-  tags: ["automne", "confort"],
-  reviews: [
-    { name: "Claire G.", rating: 4, comment: "Très doux mais taille un peu grand." }
-  ]
-},
-{
-  _id: "9",
-  nom: "T-shirt Enfant Motif",
-  description: "T-shirt coloré avec motifs amusants",
-  fullDescription: "T-shirt pour enfants avec motifs colorés et amusants. Parfait pour égayer la garde-robe de votre enfant.",
-  prix: 14.99,
-  originalPrix: 19.99,
-  categorie: "Enfant",
-  image: "tshirt-enfant.jpg",
-  images: ["tshirt-enfant.jpg", "tshirt-enfant-2.jpg"],
-  details: ["100% coton", "Motifs rigolos", "Coupe classique", "Facile à laver"],
-  tags: ["enfant", "coloré"],
-  reviews: [
-    { name: "Anne M.", rating: 5, comment: "Ma fille adore les dessins !" }
-  ]
-},
-{
-  _id: "10",
-  nom: "Short Enfant Été",
-  description: "Short léger pour l'été, 100% coton",
-  fullDescription: "Short enfant léger et respirant, parfait pour jouer dehors pendant l'été. Taille élastique pour plus de confort.",
-  prix: 12.99,
-  originalPrix: 16.99,
-  categorie: "Enfant",
-  image: "short-enfant.jpg",
-  images: ["short-enfant.jpg", "short-enfant-2.jpg"],
-  details: ["100% coton", "Taille élastique", "Coupe droite", "Léger"],
-  tags: ["été", "promo"],
-  reviews: [
-    { name: "Karine D.", rating: 5, comment: "Très pratique et résistant." }
-  ]
-},
-{
-  _id: "11",
-  nom: "Pyjama Enfant",
-  description: "Pyjama deux pièces confortable pour les nuits fraîches",
-  fullDescription: "Pyjama chaud avec haut à manches longues et pantalon assorti. Motifs ludiques, matière douce pour la peau.",
-  prix: 17.99,
-  originalPrix: 22.99,
-  categorie: "Enfant",
-  image: "pyjama-enfant.jpg",
-  images: ["pyjama-enfant.jpg", "pyjama-enfant-2.jpg"],
-  details: ["Coton doux", "Deux pièces", "Motifs amusants", "Manches longues"],
-  tags: ["nuit", "enfant"],
-  reviews: [
-    { name: "Laura V.", rating: 5, comment: "Mon fils dort super bien dedans." }
-  ]
-},
-{
-  _id: "12",
-  nom: "Sweat Enfant",
-  description: "Sweat à capuche enfant avec motif animal",
-  fullDescription: "Sweat à capuche pour enfants avec imprimé animalier, doublure chaude et poches pratiques. Confortable et stylé.",
-  prix: 22.99,
-  originalPrix: 27.99,
-  categorie: "Enfant",
-  image: "sweat-enfant.jpg",
-  images: ["sweat-enfant.jpg", "sweat-enfant-2.jpg"],
-  details: ["Capuche doublée", "Imprimé animal", "Coton majoritaire", "Poches avant"],
-  tags: ["hiver", "confort"],
-  reviews: [
-    { name: "Marc H.", rating: 4, comment: "Très beau sweat, un peu large." }
-  ]
-},
-{
-  _id: "13",
-  nom: "Sac à Main Cuir",
-  description: "Sac à main en simili cuir avec bandoulière",
-  fullDescription: "Sac élégant en simili cuir avec multiples poches et bandoulière réglable. Idéal pour un usage quotidien ou une sortie chic.",
-  prix: 49.99,
-  originalPrix: 59.99,
-  categorie: "Accessoires",
-  image: "sac-femme.jpg",
-  images: ["sac-femme.jpg", "sac-femme-2.jpg"],
-  details: ["Simili cuir", "Bandoulière réglable", "Fermeture zippée", "Plusieurs poches"],
-  tags: ["accessoire", "élégant"],
-  reviews: [
-    { name: "Isabelle R.", rating: 5, comment: "J'adore ce sac, très pratique." }
-  ]
-},
-{
-  _id: "14",
-  nom: "Casquette Classique",
-  description: "Casquette unisexe en coton",
-  fullDescription: "Casquette sobre et confortable en coton. S'adapte à toutes les têtes grâce à sa fermeture ajustable. Idéale au soleil.",
-  prix: 15.99,
-  originalPrix: 18.99,
-  categorie: "Accessoires",
-  image: "casquette-homme.jpg",
-  images: ["casquette-homme.jpg", "casquette-homme-2.jpg"],
-  details: ["100% coton", "Réglable", "Unisexe", "Protège du soleil"],
-  tags: ["casual", "été"],
-  reviews: [
-    { name: "Julien T.", rating: 5, comment: "Simple et efficace, je recommande." }
-  ]
-},
-{
-  _id: "15",
-  nom: "Lunettes de Soleil",
-  description: "Lunettes UV tendance unisexe",
-  fullDescription: "Lunettes de soleil unisexes avec protection UV400. Monture légère et look moderne. Parfaites pour la plage ou la ville.",
-  prix: 18.99,
-  originalPrix: 22.99,
-  categorie: "Accessoires",
-  image: "lunettes.jpg",
-  images: ["lunettes.jpg", "lunettes-2.jpg"],
-  details: ["Protection UV400", "Monture légère", "Verres teintés", "Design moderne"],
-  tags: ["été", "unisexe"],
-  reviews: [
-    { name: "Camille D.", rating: 5, comment: "Très stylées et protègent bien." }
-  ]
-}
-      
+        _id: "2",
+        nom: "Jean Slim Homme",
+        description: "Jean slim en denim bleu foncé",
+        fullDescription: "Jean slim confortable en denim stretch, parfait pour un look moderne. Finitions soignées, poches classiques, fermeture à glissière et bouton.",
+        prix: 39.99,
+        originalPrix: 49.99,
+        categorie: "Homme",
+        image: "pantalonclassique.png",
+        details: ["Denim stretch", "Coupe slim", "5 poches", "Lavage en machine à 40°C"],
+        tags: ["best-seller"],
+        reviews: [
+          { name: "Léo M.", rating: 5, comment: "Parfaitement ajusté, super qualité." },
+          { name: "Thomas B.", rating: 4, comment: "Un peu long pour ma taille, mais très stylé." }
+        ]
+      },
+      {
+        _id: "3",
+        nom: "Chemise à Carreaux",
+        description: "Chemise à carreaux en flanelle, idéale pour l'hiver",
+        fullDescription: "Chemise chaude en flanelle douce avec motifs à carreaux. Parfaite pour les journées fraîches. Coupe droite, col boutonné.",
+        prix: 24.99,
+        originalPrix: 29.99,
+        categorie: "Homme",
+        image: "chemise-homme.jpg",
+        details: ["Flanelle douce", "Motifs à carreaux", "Col boutonné", "Manches longues"],
+        tags: ["nouveau"],
+        reviews: [
+          { name: "Adrien R.", rating: 5, comment: "Super chaude et confortable." },
+          { name: "Lucas F.", rating: 4, comment: "Couleurs fidèles aux photos." }
+        ]
+      },
+      {
+        _id: "4",
+        nom: "Veste en Jean",
+        description: "Veste en jean bleu classique",
+        fullDescription: "Classique indémodable, cette veste en jean bleu foncé est parfaite pour le printemps ou l'automne. Coupe droite, boutons métalliques, poches poitrine.",
+        prix: 59.99,
+        originalPrix: 69.99,
+        categorie: "Homme",
+        image: "vesteenjean1.png",
+        details: ["100% coton", "Boutons métalliques", "Poches à rabat", "Style vintage"],
+        tags: ["solde"],
+        reviews: [
+          { name: "Nicolas S.", rating: 4, comment: "Bonne qualité, un peu rigide au début." }
+        ]
+      },
+      {
+        _id: "5",
+        nom: "Blouse Femme Chic",
+        description: "Blouse fluide et élégante pour toutes les occasions",
+        fullDescription: "Blouse féminine au tissu fluide, manches longues et col en V. Élégante et confortable pour le bureau ou les sorties.",
+        prix: 29.99,
+        originalPrix: 34.99,
+        categorie: "Femme",
+        image: "blouse-femme.jpg",
+        details: ["Tissu fluide", "Col V", "Manches longues", "Coupe élégante"],
+        tags: ["nouveau"],
+        reviews: [
+          { name: "Emma P.", rating: 5, comment: "Très belle coupe et agréable à porter." }
+        ]
+      },
+      {
+        _id: "6",
+        nom: "Pantalon Large Femme",
+        description: "Pantalon coupe large en lin, très confortable",
+        fullDescription: "Ce pantalon large en lin offre un confort optimal et une élégance décontractée. Taille élastique avec cordon, idéal pour l'été.",
+        prix: 34.99,
+        originalPrix: 39.99,
+        categorie: "Femme",
+        image: "pantalon-femme.jpg",
+        details: ["100% lin", "Taille élastique", "Coupe large", "Respirant"],
+        tags: ["eco", "best-seller"],
+        reviews: [
+          { name: "Julie C.", rating: 5, comment: "Parfait pour les fortes chaleurs." }
+        ]
+      },
+      {
+        _id: "7",
+        nom: "Robe d'Été Fleurie",
+        description: "Robe légère à fleurs, parfaite pour les journées ensoleillées",
+        fullDescription: "Robe d'été en tissu léger, imprimé fleuri, fines bretelles et coupe évasée. Idéale pour la plage ou les sorties en ville.",
+        prix: 44.99,
+        originalPrix: 54.99,
+        categorie: "Femme",
+        image: "robe-femme.jpg",
+        details: ["Tissu léger", "Imprimé fleuri", "Bretelles réglables", "Coupe évasée"],
+        tags: ["nouveau", "été"],
+        reviews: [
+          { name: "Sophie T.", rating: 5, comment: "Très jolie robe, bien coupée." }
+        ]
+      },
+      {
+        _id: "8",
+        nom: "Cardigan Tricoté",
+        description: "Cardigan doux et chaud pour l'automne",
+        fullDescription: "Cardigan en maille épaisse, col en V, boutonné sur le devant. Parfait pour superposer pendant les journées fraîches.",
+        prix: 39.99,
+        originalPrix: 49.99,
+        categorie: "Femme",
+        image: "cardigan-femme.jpg",
+        details: ["Maille épaisse", "Col en V", "Coupe droite", "Boutons en bois"],
+        tags: ["automne", "confort"],
+        reviews: [
+          { name: "Claire G.", rating: 4, comment: "Très doux mais taille un peu grand." }
+        ]
+      },
+      {
+        _id: "9",
+        nom: "T-shirt Enfant Motif",
+        description: "T-shirt coloré avec motifs amusants",
+        fullDescription: "T-shirt pour enfants avec motifs colorés et amusants. Parfait pour égayer la garde-robe de votre enfant.",
+        prix: 14.99,
+        originalPrix: 19.99,
+        categorie: "Enfant",
+        image: "tshirt-enfant.jpg",
+        details: ["100% coton", "Motifs rigolos", "Coupe classique", "Facile à laver"],
+        tags: ["enfant", "coloré"],
+        reviews: [
+          { name: "Anne M.", rating: 5, comment: "Ma fille adore les dessins !" }
+        ]
+      },
+      {
+        _id: "10",
+        nom: "Short Enfant Été",
+        description: "Short léger pour l'été, 100% coton",
+        fullDescription: "Short enfant léger et respirant, parfait pour jouer dehors pendant l'été. Taille élastique pour plus de confort.",
+        prix: 12.99,
+        originalPrix: 16.99,
+        categorie: "Enfant",
+        image: "short-enfant.jpg",
+        details: ["100% coton", "Taille élastique", "Coupe droite", "Léger"],
+        tags: ["été", "promo"],
+        reviews: [
+          { name: "Karine D.", rating: 5, comment: "Très pratique et résistant." }
+        ]
+      },
+      {
+        _id: "11",
+        nom: "Pyjama Enfant",
+        description: "Pyjama deux pièces confortable pour les nuits fraîches",
+        fullDescription: "Pyjama chaud avec haut à manches longues et pantalon assorti. Motifs ludiques, matière douce pour la peau.",
+        prix: 17.99,
+        originalPrix: 22.99,
+        categorie: "Enfant",
+        image: "pyjama-enfant.jpg",
+        details: ["Coton doux", "Deux pièces", "Motifs amusants", "Manches longues"],
+        tags: ["nuit", "enfant"],
+        reviews: [
+          { name: "Laura V.", rating: 5, comment: "Mon fils dort super bien dedans." }
+        ]
+      },
+      {
+        _id: "12",
+        nom: "Sweat Enfant",
+        description: "Sweat à capuche enfant avec motif animal",
+        fullDescription: "Sweat à capuche pour enfants avec imprimé animalier, doublure chaude et poches pratiques. Confortable et stylé.",
+        prix: 22.99,
+        originalPrix: 27.99,
+        categorie: "Enfant",
+        image: "sweat-enfant.jpg",
+        details: ["Capuche doublée", "Imprimé animal", "Coton majoritaire", "Poches avant"],
+        tags: ["hiver", "confort"],
+        reviews: [
+          { name: "Marc H.", rating: 4, comment: "Très beau sweat, un peu large." }
+        ]
+      },
+      {
+        _id: "13",
+        nom: "Sac à Main Cuir",
+        description: "Sac à main en simili cuir avec bandoulière",
+        fullDescription: "Sac élégant en simili cuir avec multiples poches et bandoulière réglable. Idéal pour un usage quotidien ou une sortie chic.",
+        prix: 49.99,
+        originalPrix: 59.99,
+        categorie: "Accessoires",
+        image: "sac-femme.jpg",
+        details: ["Simili cuir", "Bandoulière réglable", "Fermeture zippée", "Plusieurs poches"],
+        tags: ["accessoire", "élégant"],
+        reviews: [
+          { name: "Isabelle R.", rating: 5, comment: "J'adore ce sac, très pratique." }
+        ]
+      },
+      {
+        _id: "14",
+        nom: "Casquette Classique",
+        description: "Casquette unisexe en coton",
+        fullDescription: "Casquette sobre et confortable en coton. S'adapte à toutes les têtes grâce à sa fermeture ajustable. Idéale au soleil.",
+        prix: 15.99,
+        originalPrix: 18.99,
+        categorie: "Accessoires",
+        image: "casquette-homme.jpg",
+        details: ["100% coton", "Réglable", "Unisexe", "Protège du soleil"],
+        tags: ["casual", "été"],
+        reviews: [
+          { name: "Julien T.", rating: 5, comment: "Simple et efficace, je recommande." }
+        ]
+      },
+      {
+        _id: "15",
+        nom: "Lunettes de Soleil",
+        description: "Lunettes UV tendance unisexe",
+        fullDescription: "Lunettes de soleil unisexes avec protection UV400. Monture légère et look moderne. Parfaites pour la plage ou la ville.",
+        prix: 18.99,
+        originalPrix: 22.99,
+        categorie: "Accessoires",
+        image: "lunettes.jpg",
+        details: ["Protection UV400", "Monture légère", "Verres teintés", "Design moderne"],
+        tags: ["été", "unisexe"],
+        reviews: [
+          { name: "Camille D.", rating: 5, comment: "Très stylées et protègent bien." }
+        ]
+      }
     ];
 
     // Fonction pour charger les détails du produit
@@ -454,9 +530,11 @@
     
     // Afficher les détails du produit
     function displayProductDetails(product) {
+      // Générer les images supplémentaires
+      product.images = generateAdditionalImages(product.image);
+      
       // Infos de base
       document.getElementById('product-title').textContent = product.nom;
-      document.getElementById('product-img').src = `MaillotsCAN/${product.image}`;
       document.getElementById('product-name').textContent = product.nom;
       document.getElementById('product-description').textContent = product.description;
       document.getElementById('product-full-description').textContent = product.fullDescription || product.description;
@@ -475,6 +553,7 @@
       
       // Catégorie et SKU
       document.getElementById('product-category').textContent = product.categorie;
+      document.getElementById('product-sku').textContent = `Réf: ${product._id}`;
       
       // Badges
       const badgeElement = document.getElementById('product-badge');
@@ -488,33 +567,33 @@
         badgeElement.style.display = "none";
       }
       
-      // Miniatures
-      const thumbnailsContainer = document.getElementById('product-thumbnails');
-      thumbnailsContainer.innerHTML = '';
-      const images = product.images || [product.image];
-      images.forEach((img, index) => {
-        const thumbnail = document.createElement('img');
-        thumbnail.src = `MaillotsCAN/${img}`;
-        thumbnail.alt = `Vue ${index + 1} du produit`;
-        thumbnail.addEventListener('click', () => {
-          document.getElementById('product-img').src = thumbnail.src;
-        });
-        thumbnailsContainer.appendChild(thumbnail);
-      });
+      // Gestion des images
+      currentProductImages = product.images;
+      currentImageIndex = 0;
+      updateMainImage();
+      updateThumbnails();
       
       // Détails
       const detailsList = document.getElementById('product-details-list');
       detailsList.innerHTML = '';
-      product.details.forEach(detail => {
-        const li = document.createElement('li');
-        li.textContent = detail;
-        detailsList.appendChild(li);
-      });
+      if (product.details && product.details.length > 0) {
+        product.details.forEach(detail => {
+          const li = document.createElement('li');
+          li.textContent = detail;
+          detailsList.appendChild(li);
+        });
+      }
       
       // Avis
       const reviewsContainer = document.getElementById('reviews-container');
       reviewsContainer.innerHTML = '';
       if (product.reviews && product.reviews.length > 0) {
+        document.querySelector('.review-count').textContent = `(${product.reviews.length} avis)`;
+        
+        // Calculer la note moyenne
+        const avgRating = product.reviews.reduce((sum, review) => sum + review.rating, 0) / product.reviews.length;
+        updateRatingStars(avgRating);
+        
         product.reviews.forEach(review => {
           const reviewElement = document.createElement('div');
           reviewElement.className = 'review';
@@ -530,11 +609,76 @@
           reviewsContainer.appendChild(reviewElement);
         });
       } else {
+        document.querySelector('.review-count').textContent = '(0 avis)';
         reviewsContainer.innerHTML = '<p>Aucun avis pour ce produit.</p>';
       }
       
       // Onglets
       setupTabs();
+    }
+
+    function updateMainImage() {
+      if (currentProductImages.length > 0) {
+        document.getElementById('product-img').src = `MaillotsCAN/${currentProductImages[currentImageIndex]}`;
+      }
+    }
+
+    function updateThumbnails() {
+      const thumbnailsContainer = document.getElementById('product-thumbnails');
+      thumbnailsContainer.innerHTML = '';
+      
+      currentProductImages.forEach((img, index) => {
+        const thumbnail = document.createElement('img');
+        thumbnail.src = `MaillotsCAN/${img}`;
+        thumbnail.alt = `Vue ${index + 1} du produit`;
+        thumbnail.dataset.index = index;
+        if (index === currentImageIndex) thumbnail.classList.add('active');
+        
+        thumbnail.addEventListener('click', () => {
+          changeImageTo(index);
+        });
+        
+        thumbnailsContainer.appendChild(thumbnail);
+      });
+    }
+
+    // Fonctions pour la navigation de la galerie
+    function changeImage(direction) {
+      currentImageIndex += direction;
+      
+      if (currentImageIndex < 0) {
+        currentImageIndex = currentProductImages.length - 1;
+      } else if (currentImageIndex >= currentProductImages.length) {
+        currentImageIndex = 0;
+      }
+      
+      changeImageTo(currentImageIndex);
+    }
+
+    function changeImageTo(index) {
+      currentImageIndex = index;
+      updateMainImage();
+      updateThumbnails();
+    }
+
+    function updateRatingStars(rating) {
+      const starsContainer = document.querySelector('.product-rating .stars');
+      starsContainer.innerHTML = '';
+      
+      const fullStars = Math.floor(rating);
+      const hasHalfStar = rating % 1 >= 0.5;
+      
+      for (let i = 0; i < 5; i++) {
+        const star = document.createElement('i');
+        if (i < fullStars) {
+          star.className = 'fas fa-star';
+        } else if (i === fullStars && hasHalfStar) {
+          star.className = 'fas fa-star-half-alt';
+        } else {
+          star.className = 'far fa-star';
+        }
+        starsContainer.appendChild(star);
+      }
     }
     
     // Configurer les onglets
