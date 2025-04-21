@@ -226,7 +226,7 @@
     </div>
     
     <div class="invoice-actions">
-      <button class="btn-download" onclick="generatePDF()">
+      <button class="btn-download" onclick="generatePDFFromData()">
         <i class="fas fa-download"></i> Télécharger la facture
       </button>
     </div>
@@ -356,36 +356,202 @@
   }
 
   // Fonction pour générer le PDF
-  function generatePDF() {
-    const jsPDF = getJsPDFInstance();
-    if (!jsPDF) {
-      alert("jsPDF n'est pas correctement chargé.");
+  function generatePDFFromData() {
+  try {
+    // Récupérer les données de commande
+    const orderData = JSON.parse(localStorage.getItem('currentOrder'));
+    if (!orderData) {
+      alert("Données de commande non trouvées");
       return;
     }
 
-    const invoiceElement = document.getElementById('invoice');
-    if (!invoiceElement) {
-      alert("Élément de facture introuvable.");
-      return;
+    // Créer un nouveau document PDF
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+    
+    // Configuration de la page
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 20;
+    let yPosition = 30;
+    
+    // Couleurs
+    const primaryColor = [248, 173, 56]; // #f8ad38 en RGB
+    const grayColor = [158, 158, 158];
+    
+    // Ajouter le logo (méthode alternative)
+    try {
+      const logoUrl = './MaillotsCAN/original.png'; // Remplacez par le chemin de votre logo
+      const logoImg = new Image();
+      logoImg.src = logoUrl;
+      logoImg.onload = function() {
+        pdf.addImage(logoImg, 'PNG', margin, yPosition, 50, 25);
+      };
+      yPosition += 30; // Ajustez selon la hauteur de votre logo
+    } catch (e) {
+      console.log("Logo non chargé, continuation sans logo");
+      yPosition += 10;
     }
-
-    html2canvas(invoiceElement, { scale: 2 })
-      .then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save('facture_ABY.pdf');
-      })
-      .catch(err => {
-        console.error("Erreur PDF :", err);
-        alert("Une erreur est survenue lors de la génération du PDF.");
-      });
+    
+    // Numéro de facture et date
+    pdf.setFontSize(10);
+    pdf.setTextColor(grayColor[0], grayColor[1], grayColor[2]);
+    pdf.text(`Facture N°: ${orderData.orderNumber || 'ABY-' + new Date().getTime()}`, pageWidth - margin, yPosition, { align: "right" });
+    yPosition += 5;
+    pdf.text(`Date: ${new Date(orderData.date).toLocaleDateString('fr-FR')}`, pageWidth - margin, yPosition, { align: "right" });
+    yPosition += 20;
+    
+    // Titre principal
+    pdf.setFontSize(24);
+    pdf.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    pdf.setFont("helvetica", "bold");
+    pdf.text("FACTURE", margin, yPosition);
+    pdf.setFont("helvetica", "normal");
+    yPosition += 15;
+    
+    // Ligne de séparation orange
+    pdf.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    pdf.setLineWidth(0.5);
+    pdf.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 10;
+    
+    // Informations de l'entreprise
+    pdf.setFontSize(11);
+    pdf.setTextColor(0, 0, 0);
+    pdf.setFont("helvetica", "bold");
+    pdf.text("ABY Boutique", margin, yPosition);
+    pdf.setFont("helvetica", "normal");
+    yPosition += 5;
+    pdf.text("7 Rue Vini JR", margin, yPosition);
+    yPosition += 5;
+    pdf.text("75019 Paris, France", margin, yPosition);
+    yPosition += 5;
+    pdf.text("Tél: +33 7 83 56 81 91", margin, yPosition);
+    yPosition += 5;
+    pdf.text("Email: contact@aby.com", margin, yPosition);
+    yPosition += 15;
+    
+    // Informations du client
+    const clientX = pageWidth / 2;
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Facturé à:", clientX, yPosition);
+    pdf.setFont("helvetica", "normal");
+    yPosition += 5;
+    pdf.text(`${orderData.firstName} ${orderData.lastName}`, clientX, yPosition);
+    yPosition += 5;
+    pdf.text(orderData.address, clientX, yPosition);
+    yPosition += 5;
+    pdf.text(`${orderData.zip} ${orderData.city}`, clientX, yPosition);
+    yPosition += 5;
+    pdf.text(orderData.email, clientX, yPosition);
+    yPosition += 20;
+    
+    // Détails de la commande
+    pdf.setFontSize(10);
+    pdf.setTextColor(grayColor[0], grayColor[1], grayColor[2]);
+    pdf.text(`Méthode de paiement: ${orderData.payment === 'credit-card' ? 'Carte bancaire' : 'PayPal'}`, margin, yPosition);
+    yPosition += 10;
+    
+    // En-têtes du tableau (fond orange)
+    pdf.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    pdf.rect(margin, yPosition, pageWidth - (margin * 2), 10, 'F');
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Article", margin + 5, yPosition + 7);
+    pdf.text("Prix unitaire", margin + 90, yPosition + 7, { align: "right" });
+    pdf.text("Quantité", margin + 130, yPosition + 7, { align: "right" });
+    pdf.text("Total", margin + 170, yPosition + 7, { align: "right" });
+    yPosition += 12;
+    
+    // Lignes d'articles
+    let subtotal = 0;
+    pdf.setFont("helvetica", "normal");
+    pdf.setTextColor(0, 0, 0);
+    
+    orderData.items.forEach((item, index) => {
+      if (yPosition > 250) { // Nouvelle page si nécessaire
+        pdf.addPage();
+        yPosition = 30;
+      }
+      
+      const itemTotal = item.prix * item.quantite;
+      subtotal += itemTotal;
+      
+      // Alternance de couleurs pour les lignes
+      if (index % 2 === 0) {
+        pdf.setFillColor(248, 234, 213); // Orange très clair
+        pdf.rect(margin, yPosition - 3, pageWidth - (margin * 2), 10, 'F');
+      }
+      
+      pdf.text(item.nom, margin + 5, yPosition);
+      pdf.text(`${item.prix.toFixed(2)} €`, margin + 90, yPosition, { align: "right" });
+      pdf.text(String(item.quantite), margin + 130, yPosition, { align: "right" });
+      pdf.text(`${itemTotal.toFixed(2)} €`, margin + 170, yPosition, { align: "right" });
+      yPosition += 10;
+    });
+    
+    // Ligne de séparation avant les totaux
+    pdf.setDrawColor(200, 200, 200);
+    pdf.line(margin, yPosition + 5, pageWidth - margin, yPosition + 5);
+    yPosition += 15;
+    
+    // Totaux
+    const shipping = subtotal > 50 ? 0 : 4.99;
+    const total = subtotal + shipping;
+    
+    pdf.setFontSize(11);
+    pdf.text("Sous-total:", margin + 130, yPosition, { align: "right" });
+    pdf.text(`${subtotal.toFixed(2)} €`, margin + 170, yPosition, { align: "right" });
+    yPosition += 8;
+    
+    pdf.text("Frais de livraison:", margin + 130, yPosition, { align: "right" });
+    pdf.text(`${shipping.toFixed(2)} €`, margin + 170, yPosition, { align: "right" });
+    yPosition += 10;
+    
+    pdf.setFontSize(12);
+    pdf.setFont("helvetica", "bold");
+    pdf.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    pdf.text("Total TTC:", margin + 130, yPosition, { align: "right" });
+    pdf.text(`${total.toFixed(2)} €`, margin + 170, yPosition, { align: "right" });
+    yPosition += 15;
+    
+    // Conditions de paiement
+    pdf.setFontSize(10);
+    pdf.setTextColor(grayColor[0], grayColor[1], grayColor[2]);
+    pdf.text("Conditions de paiement: Paiement immédiat", margin, yPosition);
+    yPosition += 5;
+    pdf.text("Mode de règlement: " + (orderData.payment === 'credit-card' ? 'Carte bancaire' : 'PayPal'), margin, yPosition);
+    yPosition += 15;
+    
+    // Message de remerciement en orange
+    pdf.setFontSize(11);
+    pdf.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    pdf.text("Merci pour votre confiance !", pageWidth / 2, yPosition, { align: "center" });
+    yPosition += 5;
+    
+    // Pied de page
+    yPosition = pdf.internal.pageSize.getHeight() - 20;
+    pdf.setFontSize(8);
+    pdf.setTextColor(grayColor[0], grayColor[1], grayColor[2]);
+    pdf.text("ABY Boutique - 7 Rue Vini JR, 75019 Paris - contact@aby.com - +33 7 83 56 81 91", pageWidth / 2, yPosition, { align: "center" });
+    yPosition += 5;
+    pdf.text("SIRET: 123 456 789 00045 - TVA intracommunautaire: FR 32 123456789", pageWidth / 2, yPosition, { align: "center" });
+    yPosition += 5;
+    pdf.text("Les articles commandés ne peuvent être échangés ou remboursés qu'avec un ticket de caisse.", pageWidth / 2, yPosition, { align: "center" });
+    
+    // Filigrane orange discret
+    pdf.setFontSize(60);
+    pdf.setTextColor(248, 234, 213); // Orange très clair
+    pdf.setFont("helvetica", "bold");
+    pdf.text("ABY", pageWidth / 2, pageWidth / 2, { align: "center", angle: 45 });
+    
+    // Enregistrer le PDF
+    pdf.save(`Facture_ABY_${orderData.orderNumber || new Date().getTime()}.pdf`);
+    
+  } catch (err) {
+    console.error("Erreur lors de la génération du PDF:", err);
+    alert(`Erreur: ${err.message}`);
   }
-
+}
   // Rendre generatePDF accessible globalement
   window.generatePDF = generatePDF;
 </script>

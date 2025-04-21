@@ -96,6 +96,10 @@
               <option value="name-asc">Nom A-Z</option>
             </select>
           </div>
+          <div class="search-container">
+            <input type="text" id="search-input" placeholder="Rechercher...">
+            <button id="search-btn"><img src="MaillotsCAN/search-icon.png" alt="Rechercher"></button>
+          </div>
         </div>
 
         <div class="product-grid" id="product-grid">
@@ -228,53 +232,6 @@
       document.getElementById('count-products').textContent = filteredProducts.length;
     }
 
-    // Afficher les produits dans la grille
-    async function chargerProduits() {
-  try {
-    const res = await fetch("http://localhost:5002/api/products");
-    const produits = await res.json();
-    
-    // Normaliser les produits (s'assurer que les IDs sont corrects)
-    allProducts = produits.map((p, index) => ({
-      ...p,
-      id: index + 1, // ID numérique simple
-      _id: p._id // Conserver l'ID original si nécessaire pour d'autres opérations
-    }));
-    
-    filteredProducts = [...allProducts];
-    updateProductCount();
-    afficherProduits(allProducts); // Utilise allProducts qui contient déjà les IDs normalisés
-    initCartCount();
-  } catch (error) {
-    console.error("Erreur lors du chargement des produits:", error);
-    // Utiliser les données de seed.js comme fallback
-    allProducts = [
-  { id: 1, nom: "T-shirt Homme Coton", description: "T-shirt 100% coton, coupe classique", prix: 19.99, categorie: "Homme", image: "tshirt-homme.jpg" },
-  { id: 2, nom: "Jean Slim Homme", description: "Jean slim en denim bleu foncé", prix: 39.99, categorie: "Homme", image: "jean-homme.jpg" },
-  { id: 3, nom: "Chemise à Carreaux", description: "Chemise à carreaux en flanelle, idéale pour l'hiver", prix: 24.99, categorie: "Homme", image: "chemise-homme.jpg" },
-  { id: 4, nom: "Veste en Jean", description: "Veste en jean bleu classique", prix: 59.99, categorie: "Homme", image: "vesteenjean1.png" },
-
-  { id: 5, nom: "Blouse Femme Chic", description: "Blouse fluide et élégante pour toutes les occasions", prix: 29.99, categorie: "Femme", image: "blouse-femme.jpg" },
-  { id: 6, nom: "Pantalon Large Femme", description: "Pantalon coupe large en lin, très confortable", prix: 34.99, categorie: "Femme", image: "pantalon-femme.jpg" },
-  { id: 7, nom: "Robe d'Été Fleurie", description: "Robe légère à fleurs, parfaite pour les journées ensoleillées", prix: 44.99, categorie: "Femme", image: "robe-femme.jpg" },
-  { id: 8, nom: "Cardigan Tricoté", description: "Cardigan doux et chaud pour l'automne", prix: 39.99, categorie: "Femme", image: "cardigan-femme.jpg" },
-
-  { id: 9, nom: "T-shirt Enfant Motif", description: "T-shirt coloré avec motifs amusants", prix: 14.99, categorie: "Enfant", image: "tshirt-enfant.jpg" },
-  { id: 10, nom: "Short Enfant Été", description: "Short léger pour l'été, 100% coton", prix: 12.99, categorie: "Enfant", image: "short-enfant.jpg" },
-  { id: 11, nom: "Pyjama Enfant", description: "Pyjama deux pièces confortable pour les nuits fraîches", prix: 17.99, categorie: "Enfant", image: "pyjama-enfant.jpg" },
-  { id: 12, nom: "Sweat Enfant", description: "Sweat à capuche enfant avec motif animal", prix: 22.99, categorie: "Enfant", image: "sweat-enfant.jpg" },
-
-  { id: 13, nom: "Sac à Main Cuir", description: "Sac à main en simili cuir avec bandoulière", prix: 49.99, categorie: "Accessoires", image: "sac-femme.jpg" },
-  { id: 14, nom: "Casquette Classique", description: "Casquette unisexe en coton", prix: 15.99, categorie: "Accessoires", image: "casquette-homme.jpg" },
-  { id: 15, nom: "Lunettes de Soleil", description: "Lunettes UV tendance unisexe", prix: 18.99, categorie: "Accessoires", image: "lunettes.jpg" },
-];
-
-    filteredProducts = [...allProducts];
-    updateProductCount();
-    afficherProduits(allProducts);
-    initCartCount();
-  }
-}
 
 // Fonction pour générer le prochain ID disponible
 let lastId = 15;
@@ -483,21 +440,28 @@ function afficherProduits(liste) {
 
     // Filtrer les produits selon les critères sélectionnés
     function filterProducts() {
-      const selectedCategory = document.querySelector('.filter-btn.active').dataset.category;
-      const maxPrice = parseInt(priceSlider.value);
-      
-      filteredProducts = allProducts.filter(product => {
-        return (selectedCategory === 'Tous' || product.categorie === selectedCategory) && 
-               product.prix <= maxPrice;
-      });
-      
-      // Tri
-      const sortMethod = document.getElementById('sort-select').value;
-      sortProducts(sortMethod);
-      
-      updateProductCount();
-      afficherProduits(filteredProducts);
-    }
+  const selectedCategory = document.querySelector('.filter-btn.active').dataset.category;
+  const maxPrice = parseInt(priceSlider.value);
+  const searchTerm = document.getElementById('search-input').value.toLowerCase();
+  
+  filteredProducts = allProducts.filter(product => {
+    const matchesCategory = selectedCategory === 'Tous' || product.categorie === selectedCategory;
+    const matchesPrice = product.prix <= maxPrice;
+    const matchesSearch = !searchTerm || 
+                         product.nom.toLowerCase().includes(searchTerm) || 
+                         product.description.toLowerCase().includes(searchTerm) ||
+                         product.categorie.toLowerCase().includes(searchTerm);
+    
+    return matchesCategory && matchesPrice && matchesSearch;
+  });
+  
+  // Tri
+  const sortMethod = document.getElementById('sort-select').value;
+  sortProducts(sortMethod);
+  
+  updateProductCount();
+  afficherProduits(filteredProducts);
+}
 
     // Trier les produits
     function sortProducts(method) {
@@ -612,6 +576,32 @@ function afficherProduits(liste) {
       localStorage.removeItem("currentUser");
       window.location.reload();
     }
+    function searchProducts(searchTerm) {
+  if (!searchTerm) {
+    filteredProducts = [...allProducts];
+  } else {
+    const term = searchTerm.toLowerCase();
+    filteredProducts = allProducts.filter(product => 
+      product.nom.toLowerCase().includes(term) || 
+      product.description.toLowerCase().includes(term) ||
+      product.categorie.toLowerCase().includes(term)
+    );
+  }
+  filterProducts(); // Applique aussi les autres filtres
+}
+
+// Écouteurs d'événements pour la recherche
+document.getElementById('search-btn').addEventListener('click', function() {
+  const searchTerm = document.getElementById('search-input').value;
+  searchProducts(searchTerm);
+});
+
+document.getElementById('search-input').addEventListener('keyup', function(e) {
+  if (e.key === 'Enter') {
+    const searchTerm = this.value;
+    searchProducts(searchTerm);
+  }
+});
   </script>
 </body>
 </html>
