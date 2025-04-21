@@ -357,15 +357,15 @@ function afficherProduits(liste) {
     grid.appendChild(div);
   });
       // Ajouter les écouteurs d'événements pour "Aperçu rapide"
-      document.querySelectorAll('.quick-view-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const productId = this.getAttribute('data-id');
-          const product = liste.find(p => (p._id || Math.random()) == productId);
-          if (product) {
-            openQuickView(product);
-          }
-        });
-      });
+      document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const productId = this.getAttribute('data-id');
+    const product = liste.find(p => p.id == productId);
+    if (product) {
+      ajouterAuPanier(product);
+    }
+  });
+});
     }
 
     // Générer les étoiles pour la note
